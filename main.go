@@ -18,15 +18,14 @@ func runTests(dir string) bool {
 }
 
 func main() {
-	if err := ensureOAuthToken(); err != nil {
-		fmt.Println("Failed to set up Claude token:", err)
-		os.Exit(1)
-	}
-
 	reader := bufio.NewReader(os.Stdin)
 	phase := Red
 	kataDir := "mars-rover/MarsRover"
-	assistant := ClaudeCLIAssistant{}
+	assistant, err := NewClaudeCLIAssistant()
+	if err != nil {
+		fmt.Println("Failed to set up Claude CLI:", err)
+		os.Exit(1)
+	}
 
 	for {
 		fmt.Printf("\n--- Phase: %s ---\n", phase)

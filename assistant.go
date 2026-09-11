@@ -1,76 +1,24 @@
 package main
 
 import (
-	"bytes"
-	"encoding/json"
 	"fmt"
 	"os"
 	"os/exec"
-	"path/filepath"
-	"regexp"
 )
 
-var oAuthToken string
-
-func configPath() string {
-	return filepath.Join(os.Getenv("APPDATA"), "kata-trainer", "config.json")
+type ClaudeCLIAssistant struct {
+	auth *ClaudeAuth
 }
 
-func loadToken() string {
-	data, err := os.ReadFile(configPath())
-	if err != nil {
-		return ""
+func NewClaudeCLIAssistant() (*ClaudeCLIAssistant, error) {
+	auth := NewClaudeAuth()
+	if err := auth.EnsureToken(); err != nil {
+		return nil, err
 	}
-	var cfg struct {
-		Token string `json:"token"`
-	}
-	if json.Unmarshal(data, &cfg) != nil {
-		return ""
-	}
-	return cfg.Token
+	return &ClaudeCLIAssistant{auth: auth}, nil
 }
 
-func saveToken(token string) error {
-	path := configPath()
-	os.MkdirAll(filepath.Dir(path), 0700)
-	data, _ := json.Marshal(struct {
-		Token string `json:"token"`
-	}{token})
-	return os.WriteFile(path, data, 0600)
-}
-
-func ensureOAuthToken() error {
-	if token := loadToken(); token != "" {
-		oAuthToken = token
-		return nil
-	}
-
-	fmt.Println("No Claude token found. Running 'claude setup-token'...")
-	cmd := exec.Command("claude", "setup-token")
-	cmd.Stdin = os.Stdin
-
-	var buf bytes.Buffer
-	cmd.Stdout = &buf
-	cmd.Stderr = &buf
-
-	if err := cmd.Run(); err != nil {
-		fmt.Println(buf.String())
-		return err
-	}
-
-	re := regexp.MustCompile(`sk-ant-oat01-[A-Za-z0-9_-]+`)
-	match := re.FindString(buf.String())
-	if match == "" {
-		return fmt.Errorf("Could not find token in 'setup-token' output")
-	}
-
-	oAuthToken = match
-	return saveToken(match)
-}
-
-type ClaudeCLIAssistant struct{}
-
-func (a ClaudeCLIAssistant) ProposeChange(phase Phase, instruction string, kataDir string) (string, error) {
+func (assitant ClaudeCLIAssistant) ProposeChange(phase Phase, instruction string, kataDir string) (string, error) {
 	prompt := fmt.Sprintf(
 		"You are helping with the %s phase of TDD. Make ONLY the following small, specific change, nothing else: %s. Do not run any commands, do not run tests, do not verify your change, just make the edit and stop.",
 		phase.String(), instruction,
@@ -78,7 +26,7 @@ func (a ClaudeCLIAssistant) ProposeChange(phase Phase, instruction string, kataD
 
 	cmd := exec.Command("claude", "-p", prompt, "--allowedTools", "Edit", "--safe-mode")
 	cmd.Dir = kataDir
-	cmd.Env = append(os.Environ(), "CLAUDE_CODE_OAUTH_TOKEN="+oAuthToken)
+	cmd.Env = append(os.Environ(), "CLAUDE_CODE_OAUTH_TOKEN="+assitant.auth.token)
 
 	output, err := cmd.CombinedOutput()
 	return string(output), err
