@@ -14,7 +14,7 @@ func (a ClaudeCLIAssistant) ProposeChange(phase Phase, instruction string, kataD
 		phase.String(), instruction,
 	)
 
-	cmd := exec.Command("claude", "-p", prompt, "--allowedTools", "Edit")
+	cmd := exec.Command("claude", "-p", prompt, "--allowedTools", "Edit", "--safe-mode")
 	cmd.Dir = kataDir
 	cmd.Env = append(os.Environ(), "CLAUDE_CODE_OAUTH_TOKEN=...")
 
