@@ -19,7 +19,7 @@ func runTests(dir string) bool {
 
 func main() {
 	reader := bufio.NewReader(os.Stdin)
-	phase := Red
+	machine := NewTDDStateMachine()
 	kataDir := "mars-rover/MarsRover"
 	assistant, err := NewClaudeCLIAssistant()
 	if err != nil {
@@ -28,7 +28,7 @@ func main() {
 	}
 
 	for {
-		fmt.Printf("\n--- Phase: %s ---\n", phase)
+		fmt.Printf("\n--- Phase: %s ---\n", machine.Phase())
 		fmt.Println("Type an instruction for Claude, or 'next' if you edited manually:")
 		fmt.Print("> ")
 
@@ -36,7 +36,7 @@ func main() {
 		input = strings.TrimSpace(input)
 
 		if input != "next" {
-			output, err := assistant.ProposeChange(phase, input, kataDir)
+			output, err := assistant.ProposeChange(machine.Phase(), input, kataDir)
 			if err != nil {
 				if strings.Contains(output, "OAuth session expired") {
 					fmt.Println("Your Claude session has expired. Please run 'claude' to log in, then restart this tool.")
@@ -52,6 +52,6 @@ func main() {
 		testsPassed := runTests(kataDir)
 
 		fmt.Println("Tests passed:", testsPassed)
-		phase = nextPhase(phase, testsPassed)
+		machine.Advance(testsPassed)
 	}
 }

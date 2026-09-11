@@ -20,19 +20,29 @@ func (p Phase) String() string {
 	return "UNKNOWN"
 }
 
-func nextPhase(current Phase, testsPassed bool) Phase {
-	switch current {
+type TDDStateMachine struct {
+	phase Phase
+}
+
+func NewTDDStateMachine() *TDDStateMachine {
+	return &TDDStateMachine{phase: Red}
+}
+
+func (m *TDDStateMachine) Phase() Phase {
+	return m.phase
+}
+
+func (m *TDDStateMachine) Advance(testsPassed bool) {
+	switch m.phase {
 	case Red:
 		if !testsPassed {
-			return Green
+			m.phase = Green
 		}
-		return Red
 	case Green:
 		if testsPassed {
-			return Refactor
+			m.phase = Refactor
 		}
 	case Refactor:
-		return Refactor
+		m.phase = Refactor
 	}
-	return current
 }
