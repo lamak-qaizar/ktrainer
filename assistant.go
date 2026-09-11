@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"io"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -51,10 +50,11 @@ func ensureOAuthToken() error {
 	cmd.Stdin = os.Stdin
 
 	var buf bytes.Buffer
-	cmd.Stdout = io.MultiWriter(os.Stdout, &buf)
-	cmd.Stderr = os.Stderr
+	cmd.Stdout = &buf
+	cmd.Stderr = &buf
 
 	if err := cmd.Run(); err != nil {
+		fmt.Println(buf.String())
 		return err
 	}
 
