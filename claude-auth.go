@@ -52,30 +52,39 @@ func (auth *ClaudeAuth) saveToken(token string) error {
 	return os.WriteFile(path, data, 0600)
 }
 
+func (auth *ClaudeAuth) setupToken() (string, error) {
+	fmt.Println("No Claude token found. Running 'claude setup-token'...")
+	cmd := exec.Command("claude", "setup-token")
+	cmd.Stdin = os.Stdin
+
+	var buf bytes.Buffer
+	cmd.Stdout = &buf
+	cmd.Stderr = &buf
+
+	if err := cmd.Run(); err != nil {
+		fmt.Println(buf.String())
+		return "", err
+	}
+
+	re := regexp.MustCompile(`sk-ant-oat01-[A-Za-z0-9_-]+`)
+	match := re.FindString(buf.String())
+	if match == "" {
+		return "", fmt.Errorf("Could not find token in 'setup-token' output")
+	}
+
+	return match, nil
+}
+
 func (auth *ClaudeAuth) EnsureToken() error {
 	tokenJson := auth.loadToken()
 	if tokenJson == nil {
-		fmt.Println("No Claude token found. Running 'claude setup-token'...")
-		cmd := exec.Command("claude", "setup-token")
-		cmd.Stdin = os.Stdin
-
-		var buf bytes.Buffer
-		cmd.Stdout = &buf
-		cmd.Stderr = &buf
-
-		if err := cmd.Run(); err != nil {
-			fmt.Println(buf.String())
+		token, err := auth.setupToken()
+		if err != nil {
 			return err
 		}
 
-		re := regexp.MustCompile(`sk-ant-oat01-[A-Za-z0-9_-]+`)
-		match := re.FindString(buf.String())
-		if match == "" {
-			return fmt.Errorf("Could not find token in 'setup-token' output")
-		}
-
-		auth.token = match
-		return auth.saveToken(match)
+		auth.token = token
+		return auth.saveToken(token)
 	}
 
 	auth.token = tokenJson.Token
