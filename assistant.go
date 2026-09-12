@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"strings"
 )
 
 type ClaudeCLIAssistant struct {
@@ -18,6 +19,14 @@ func NewClaudeCLIAssistant() (*ClaudeCLIAssistant, error) {
 	return &ClaudeCLIAssistant{auth: auth}, nil
 }
 
+func (assistant ClaudeCLIAssistant) invalidatePersistedTokenIfSessionHasExpired(output string, err error) {
+	if err != nil {
+		if strings.Contains(string(output), "OAuth session expired") {
+			assistant.auth.Invalidate()
+		}
+	}
+}
+
 func (assitant ClaudeCLIAssistant) ProposeChange(phase Phase, instruction string, kataDir string) (string, error) {
 	prompt := fmt.Sprintf(
 		"You are helping with the %s phase of TDD. Make ONLY the following small, specific change, nothing else: %s. Do not run any commands, do not run tests, do not verify your change, just make the edit and stop.",
@@ -29,5 +38,7 @@ func (assitant ClaudeCLIAssistant) ProposeChange(phase Phase, instruction string
 	cmd.Env = append(os.Environ(), "CLAUDE_CODE_OAUTH_TOKEN="+assitant.auth.token)
 
 	output, err := cmd.CombinedOutput()
+	assitant.invalidatePersistedTokenIfSessionHasExpired(string(output), err)
+
 	return string(output), err
 }

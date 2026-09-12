@@ -38,10 +38,6 @@ func main() {
 		if input != "next" {
 			output, err := assistant.ProposeChange(machine.Phase(), input, kataDir)
 			if err != nil {
-				if strings.Contains(output, "OAuth session expired") {
-					fmt.Println("Your Claude session has expired. Please run 'claude' to log in, then restart this tool.")
-					os.Exit(1)
-				}
 				fmt.Println("Error calling Claude:", output)
 				continue
 			}

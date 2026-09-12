@@ -79,7 +79,7 @@ func (auth *ClaudeAuth) setupToken() (string, error) {
 	return match, nil
 }
 
-func (auth *ClaudeAuth) invalidate() {
+func (auth *ClaudeAuth) Invalidate() {
 	auth.saveToken(auth.token, time.Now())
 }
 
