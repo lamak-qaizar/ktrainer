@@ -19,7 +19,7 @@ type ClaudeAuth struct {
 
 type tokenJson struct {
 	Token     string    `json:"token"`
-	CreatedAt time.Time `json:"created_at"`
+	ExpiresAt time.Time `json:"expires_at"`
 }
 
 func NewClaudeAuth() (*ClaudeAuth, error) {
@@ -41,16 +41,18 @@ func (auth *ClaudeAuth) loadToken() *tokenJson {
 	if json.Unmarshal(data, &tj) != nil {
 		return nil
 	}
-	if time.Since(tj.CreatedAt) > tokenTTL {
+	if time.Now().After(tj.ExpiresAt) {
 		return nil
 	}
 	return &tj
 }
 
-func (auth *ClaudeAuth) saveToken(token string) error {
+func (auth *ClaudeAuth) saveToken(token string, expires_at time.Time) error {
 	path := auth.configPath()
 	os.MkdirAll(filepath.Dir(path), 0700)
-	data, _ := json.Marshal(tokenJson{Token: token, CreatedAt: time.Now()})
+	data, _ := json.Marshal(tokenJson{
+		Token:     token,
+		ExpiresAt: expires_at})
 	return os.WriteFile(path, data, 0600)
 }
 
@@ -77,8 +79,8 @@ func (auth *ClaudeAuth) setupToken() (string, error) {
 	return match, nil
 }
 
-func (auth *ClaudeAuth) ClearToken() {
-	os.Remove(auth.configPath())
+func (auth *ClaudeAuth) invalidate() {
+	auth.saveToken(auth.token, time.Now())
 }
 
 func (auth *ClaudeAuth) ensureToken() error {
@@ -90,7 +92,7 @@ func (auth *ClaudeAuth) ensureToken() error {
 		}
 
 		auth.token = token
-		return auth.saveToken(token)
+		return auth.saveToken(token, time.Now().Add(tokenTTL))
 	}
 
 	auth.token = tokenJson.Token
