@@ -22,8 +22,10 @@ type tokenJson struct {
 	CreatedAt time.Time `json:"created_at"`
 }
 
-func NewClaudeAuth() *ClaudeAuth {
-	return &ClaudeAuth{}
+func NewClaudeAuth() (*ClaudeAuth, error) {
+	auth := ClaudeAuth{}
+	err := auth.ensureToken()
+	return &auth, err
 }
 
 func (auth *ClaudeAuth) configPath() string {
@@ -75,7 +77,11 @@ func (auth *ClaudeAuth) setupToken() (string, error) {
 	return match, nil
 }
 
-func (auth *ClaudeAuth) EnsureToken() error {
+func (auth *ClaudeAuth) ClearToken() {
+	os.Remove(auth.configPath())
+}
+
+func (auth *ClaudeAuth) ensureToken() error {
 	tokenJson := auth.loadToken()
 	if tokenJson == nil {
 		token, err := auth.setupToken()

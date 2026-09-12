@@ -11,8 +11,8 @@ type ClaudeCLIAssistant struct {
 }
 
 func NewClaudeCLIAssistant() (*ClaudeCLIAssistant, error) {
-	auth := NewClaudeAuth()
-	if err := auth.EnsureToken(); err != nil {
+	auth, err := NewClaudeAuth()
+	if err != nil {
 		return nil, err
 	}
 	return &ClaudeCLIAssistant{auth: auth}, nil
