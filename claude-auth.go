@@ -24,7 +24,7 @@ type tokenJson struct {
 
 func NewClaudeAuth() (*ClaudeAuth, error) {
 	auth := ClaudeAuth{}
-	err := auth.ensureToken()
+	err := auth.loadTokenFromConfigOrSetup()
 	return &auth, err
 }
 
@@ -32,7 +32,7 @@ func (auth *ClaudeAuth) configPath() string {
 	return filepath.Join(os.Getenv("APPDATA"), "kata-trainer", "config.json")
 }
 
-func (auth *ClaudeAuth) loadToken() *tokenJson {
+func (auth *ClaudeAuth) loadTokenFromConfig() *tokenJson {
 	data, err := os.ReadFile(auth.configPath())
 	if err != nil {
 		return nil
@@ -47,7 +47,7 @@ func (auth *ClaudeAuth) loadToken() *tokenJson {
 	return &tj
 }
 
-func (auth *ClaudeAuth) saveToken(token string, expires_at time.Time) error {
+func (auth *ClaudeAuth) saveTokenToConfig(token string, expires_at time.Time) error {
 	path := auth.configPath()
 	os.MkdirAll(filepath.Dir(path), 0700)
 	data, _ := json.Marshal(tokenJson{
@@ -80,11 +80,11 @@ func (auth *ClaudeAuth) setupToken() (string, error) {
 }
 
 func (auth *ClaudeAuth) Invalidate() {
-	auth.saveToken(auth.token, time.Now())
+	auth.saveTokenToConfig(auth.token, time.Now())
 }
 
-func (auth *ClaudeAuth) ensureToken() error {
-	tokenJson := auth.loadToken()
+func (auth *ClaudeAuth) loadTokenFromConfigOrSetup() error {
+	tokenJson := auth.loadTokenFromConfig()
 	if tokenJson == nil {
 		token, err := auth.setupToken()
 		if err != nil {
@@ -92,10 +92,9 @@ func (auth *ClaudeAuth) ensureToken() error {
 		}
 
 		auth.token = token
-		return auth.saveToken(token, time.Now().Add(tokenTTL))
+		return auth.saveTokenToConfig(token, time.Now().Add(tokenTTL))
 	}
 
 	auth.token = tokenJson.Token
 	return nil
-
 }
