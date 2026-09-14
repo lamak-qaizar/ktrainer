@@ -7,15 +7,8 @@ import (
 
 const KATA_DIR string = "mars-rover/MarsRover"
 
-func main() {
-	test_runner := NewDotnetTestRunner()
+func runApp(ui UI, assistant Assistant, testRunner TestRunner) {
 	machine := NewTDDStateMachine()
-	ui := NewUI(os.Stdin, os.Stdout)
-	assistant, err := NewClaudeCLIAssistant()
-	if err != nil {
-		fmt.Println("Failed to set up Claude CLI:", err)
-		os.Exit(1)
-	}
 
 	for {
 		ui.Writeln("\n--- Phase: %s ---", machine.Phase())
@@ -37,9 +30,21 @@ func main() {
 		fmt.Println(output)
 
 		fmt.Println("Running tests...")
-		testsPassed := test_runner.Run(KATA_DIR)
+		testsPassed := testRunner.Run(KATA_DIR)
 
 		fmt.Println("Tests passed:", testsPassed)
 		machine.Advance(testsPassed)
 	}
+}
+
+func main() {
+	testRunner := NewDotnetTestRunner()
+	ui := NewCommandLine(os.Stdin, os.Stdout)
+	assistant, err := NewClaudeCLIAssistant()
+	if err != nil {
+		fmt.Println("Failed to set up Claude CLI:", err)
+		os.Exit(1)
+	}
+
+	runApp(ui, assistant, testRunner)
 }

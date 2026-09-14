@@ -5,6 +5,10 @@ import (
 	"os/exec"
 )
 
+type TestRunner interface {
+	Run(dir string) (passed bool)
+}
+
 type DotnetTestRunner struct{}
 
 func NewDotnetTestRunner() *DotnetTestRunner {

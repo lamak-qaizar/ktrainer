@@ -7,6 +7,10 @@ import (
 	"strings"
 )
 
+type Assistant interface {
+	ProposeChange(phase Phase, instruction string, kataDir string) (string, error)
+}
+
 type ClaudeCLIAssistant struct {
 	auth *ClaudeAuth
 }
