@@ -18,21 +18,21 @@ func runApp(ui UI, assistant Assistant, testRunner TestRunner) {
 		input := ui.Read()
 
 		if input == "exit" {
-			fmt.Println("Exiting kata trainer")
+			ui.Writeln("Exiting kata trainer.")
 			break
 		}
 
 		output, err := assistant.ProposeChange(machine.Phase(), input, KATA_DIR)
 		if err != nil {
-			fmt.Println("Error calling Claude:", output)
+			ui.Writeln("Error calling Claude:", output)
 			continue
 		}
-		fmt.Println(output)
+		ui.Writeln(output)
 
-		fmt.Println("Running tests...")
+		ui.Writeln("Running tests...")
 		testsPassed := testRunner.Run(KATA_DIR)
 
-		fmt.Println("Tests passed:", testsPassed)
+		ui.Writeln("Tests passed:", testsPassed)
 		machine.Advance(testsPassed)
 	}
 }
