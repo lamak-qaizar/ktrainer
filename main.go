@@ -1,11 +1,9 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
 	"os"
 	"os/exec"
-	"strings"
 )
 
 const KATA_DIR string = "mars-rover/MarsRover"
@@ -20,8 +18,8 @@ func runTests(dir string) bool {
 }
 
 func main() {
-	reader := bufio.NewReader(os.Stdin)
 	machine := NewTDDStateMachine()
+	ui := NewUI(os.Stdin, os.Stdout)
 	assistant, err := NewClaudeCLIAssistant()
 	if err != nil {
 		fmt.Println("Failed to set up Claude CLI:", err)
@@ -29,12 +27,11 @@ func main() {
 	}
 
 	for {
-		fmt.Printf("\n--- Phase: %s ---\n", machine.Phase())
-		fmt.Println("Type an instruction for Claude:")
-		fmt.Print("> ")
+		ui.Writeln("\n--- Phase: %s ---", machine.Phase())
+		ui.Writeln("Type an instruction for Claude")
+		ui.Write("> ")
 
-		input, _ := reader.ReadString('\n')
-		input = strings.TrimSpace(input)
+		input := ui.Read()
 
 		if input == "exit" {
 			fmt.Println("Exiting kata trainer")
