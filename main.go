@@ -30,20 +30,18 @@ func main() {
 
 	for {
 		fmt.Printf("\n--- Phase: %s ---\n", machine.Phase())
-		fmt.Println("Type an instruction for Claude, or 'next' if you edited manually:")
+		fmt.Println("Type an instruction for Claude:")
 		fmt.Print("> ")
 
 		input, _ := reader.ReadString('\n')
 		input = strings.TrimSpace(input)
 
-		if input != "next" {
-			output, err := assistant.ProposeChange(machine.Phase(), input, KATA_DIR)
-			if err != nil {
-				fmt.Println("Error calling Claude:", output)
-				continue
-			}
-			fmt.Println(output)
+		output, err := assistant.ProposeChange(machine.Phase(), input, KATA_DIR)
+		if err != nil {
+			fmt.Println("Error calling Claude:", output)
+			continue
 		}
+		fmt.Println(output)
 
 		fmt.Println("Running tests...")
 		testsPassed := runTests(KATA_DIR)
