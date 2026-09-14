@@ -36,6 +36,11 @@ func main() {
 		input, _ := reader.ReadString('\n')
 		input = strings.TrimSpace(input)
 
+		if input == "exit" {
+			fmt.Println("Exiting kata trainer")
+			break
+		}
+
 		output, err := assistant.ProposeChange(machine.Phase(), input, KATA_DIR)
 		if err != nil {
 			fmt.Println("Error calling Claude:", output)
