@@ -8,6 +8,8 @@ import (
 	"strings"
 )
 
+const KATA_DIR string = "mars-rover/MarsRover"
+
 func runTests(dir string) bool {
 	cmd := exec.Command("dotnet", "test")
 	cmd.Dir = dir
@@ -20,7 +22,6 @@ func runTests(dir string) bool {
 func main() {
 	reader := bufio.NewReader(os.Stdin)
 	machine := NewTDDStateMachine()
-	kataDir := "mars-rover/MarsRover"
 	assistant, err := NewClaudeCLIAssistant()
 	if err != nil {
 		fmt.Println("Failed to set up Claude CLI:", err)
@@ -36,7 +37,7 @@ func main() {
 		input = strings.TrimSpace(input)
 
 		if input != "next" {
-			output, err := assistant.ProposeChange(machine.Phase(), input, kataDir)
+			output, err := assistant.ProposeChange(machine.Phase(), input, KATA_DIR)
 			if err != nil {
 				fmt.Println("Error calling Claude:", output)
 				continue
@@ -45,7 +46,7 @@ func main() {
 		}
 
 		fmt.Println("Running tests...")
-		testsPassed := runTests(kataDir)
+		testsPassed := runTests(KATA_DIR)
 
 		fmt.Println("Tests passed:", testsPassed)
 		machine.Advance(testsPassed)
