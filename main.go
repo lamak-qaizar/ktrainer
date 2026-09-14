@@ -3,21 +3,12 @@ package main
 import (
 	"fmt"
 	"os"
-	"os/exec"
 )
 
 const KATA_DIR string = "mars-rover/MarsRover"
 
-func runTests(dir string) bool {
-	cmd := exec.Command("dotnet", "test")
-	cmd.Dir = dir
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-	err := cmd.Run()
-	return err == nil
-}
-
 func main() {
+	test_runner := NewDotnetTestRunner()
 	machine := NewTDDStateMachine()
 	ui := NewUI(os.Stdin, os.Stdout)
 	assistant, err := NewClaudeCLIAssistant()
@@ -46,7 +37,7 @@ func main() {
 		fmt.Println(output)
 
 		fmt.Println("Running tests...")
-		testsPassed := runTests(KATA_DIR)
+		testsPassed := test_runner.Run(KATA_DIR)
 
 		fmt.Println("Tests passed:", testsPassed)
 		machine.Advance(testsPassed)
