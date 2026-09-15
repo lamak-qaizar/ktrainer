@@ -1,8 +1,8 @@
 package main
 
 import (
-	"fmt"
 	"os"
+	"time"
 )
 
 const KATA_DIR string = "mars-rover/MarsRover"
@@ -37,14 +37,23 @@ func runApp(ui UI, assistant Assistant, testRunner TestRunner) {
 	}
 }
 
+func SetupClaudeAuth(ui UI) ClaudeAuth {
+	token := LoadTokenFromConfig()
+	if token != "" {
+		return *NewClaudeAuth(token)
+	}
+
+	ui.Writeln("Run 'claude setup-token' and paste the token here.")
+	ui.Write("> ")
+	token = ui.Read()
+	SaveTokenToConfig(token, time.Now().Add(tokenTTL))
+	return *NewClaudeAuth(token)
+}
+
 func main() {
 	ui := NewCommandLine(os.Stdin, os.Stdout)
 	testRunner := NewDotnetTestRunner(ui.Writer())
-	assistant, err := NewClaudeCLIAssistant()
-	if err != nil {
-		fmt.Println("Failed to set up Claude CLI:", err)
-		os.Exit(1)
-	}
-
+	auth := SetupClaudeAuth(ui)
+	assistant := NewClaudeCLIAssistant(auth)
 	runApp(ui, assistant, testRunner)
 }

@@ -1,13 +1,9 @@
 package main
 
 import (
-	"bytes"
 	"encoding/json"
-	"fmt"
 	"os"
-	"os/exec"
 	"path/filepath"
-	"regexp"
 	"time"
 )
 
@@ -22,79 +18,38 @@ type tokenJson struct {
 	ExpiresAt time.Time `json:"expires_at"`
 }
 
-func NewClaudeAuth() (*ClaudeAuth, error) {
-	auth := ClaudeAuth{}
-	err := auth.loadTokenFromConfigOrSetup()
-	return &auth, err
+func NewClaudeAuth(token string) *ClaudeAuth {
+	return &ClaudeAuth{token: token}
 }
 
-func (auth *ClaudeAuth) configPath() string {
+func configPath() string {
 	return filepath.Join(os.Getenv("APPDATA"), "kata-trainer", "config.json")
 }
 
-func (auth *ClaudeAuth) loadTokenFromConfig() *tokenJson {
-	data, err := os.ReadFile(auth.configPath())
+func LoadTokenFromConfig() string {
+	data, err := os.ReadFile(configPath())
 	if err != nil {
-		return nil
+		return ""
 	}
 	var tj tokenJson
 	if json.Unmarshal(data, &tj) != nil {
-		return nil
+		return ""
 	}
 	if time.Now().After(tj.ExpiresAt) {
-		return nil
+		return ""
 	}
-	return &tj
+	return tj.Token
 }
 
-func (auth *ClaudeAuth) saveTokenToConfig(token string, expires_at time.Time) error {
-	path := auth.configPath()
+func SaveTokenToConfig(token string, expires_at time.Time) {
+	path := configPath()
 	os.MkdirAll(filepath.Dir(path), 0700)
 	data, _ := json.Marshal(tokenJson{
 		Token:     token,
 		ExpiresAt: expires_at})
-	return os.WriteFile(path, data, 0600)
-}
-
-func (auth *ClaudeAuth) setupToken() (string, error) {
-	fmt.Println("No Claude token found. Running 'claude setup-token'...")
-	cmd := exec.Command("claude", "setup-token")
-	cmd.Stdin = os.Stdin
-
-	var buf bytes.Buffer
-	cmd.Stdout = &buf
-	cmd.Stderr = &buf
-
-	if err := cmd.Run(); err != nil {
-		fmt.Println(buf.String())
-		return "", err
-	}
-
-	re := regexp.MustCompile(`sk-ant-oat01-[A-Za-z0-9_-]+`)
-	match := re.FindString(buf.String())
-	if match == "" {
-		return "", fmt.Errorf("Could not find token in 'setup-token' output")
-	}
-
-	return match, nil
+	os.WriteFile(path, data, 0600)
 }
 
 func (auth *ClaudeAuth) Invalidate() {
-	auth.saveTokenToConfig(auth.token, time.Now())
-}
-
-func (auth *ClaudeAuth) loadTokenFromConfigOrSetup() error {
-	tokenJson := auth.loadTokenFromConfig()
-	if tokenJson == nil {
-		token, err := auth.setupToken()
-		if err != nil {
-			return err
-		}
-
-		auth.token = token
-		return auth.saveTokenToConfig(token, time.Now().Add(tokenTTL))
-	}
-
-	auth.token = tokenJson.Token
-	return nil
+	SaveTokenToConfig(auth.token, time.Now())
 }

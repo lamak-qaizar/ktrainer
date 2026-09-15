@@ -15,12 +15,8 @@ type ClaudeCLIAssistant struct {
 	auth *ClaudeAuth
 }
 
-func NewClaudeCLIAssistant() (*ClaudeCLIAssistant, error) {
-	auth, err := NewClaudeAuth()
-	if err != nil {
-		return nil, err
-	}
-	return &ClaudeCLIAssistant{auth: auth}, nil
+func NewClaudeCLIAssistant(auth ClaudeAuth) *ClaudeCLIAssistant {
+	return &ClaudeCLIAssistant{auth: &auth}
 }
 
 func (assistant ClaudeCLIAssistant) invalidatePersistedTokenIfSessionHasExpired(output string, err error) {
