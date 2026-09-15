@@ -1,7 +1,6 @@
 package main
 
 import (
-	"os"
 	"time"
 )
 
@@ -51,7 +50,7 @@ func SetupClaudeAuth(ui UI) *ClaudeAuth {
 }
 
 func main() {
-	ui := NewCommandLine(os.Stdin, os.Stdout)
+	ui := NewStdIOCommandLine()
 	testRunner := NewDotnetTestRunner(ui.Writer())
 	auth := SetupClaudeAuth(ui)
 	assistant := NewClaudeCLIAssistant(auth)

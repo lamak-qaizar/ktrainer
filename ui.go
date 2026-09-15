@@ -2,9 +2,12 @@ package main
 
 import (
 	"bufio"
+	"bytes"
 	"fmt"
 	"io"
+	"os"
 	"strings"
+	"testing"
 )
 
 type UI interface {
@@ -25,6 +28,10 @@ func NewCommandLine(input io.Reader, output io.Writer) *CommandLine {
 	}
 }
 
+func NewStdIOCommandLine() *CommandLine {
+	return NewCommandLine(os.Stdin, os.Stdout)
+}
+
 func (ui *CommandLine) Write(format string, a ...interface{}) {
 	fmt.Fprintf(ui.output, format, a...)
 }
@@ -40,4 +47,25 @@ func (ui *CommandLine) Read() string {
 
 func (ui *CommandLine) Writer() io.Writer {
 	return ui.output
+}
+
+type TestCommandLine struct {
+	*CommandLine
+	output *bytes.Buffer
+}
+
+func NewTestCommandLine(input io.Reader) *TestCommandLine {
+	var buf bytes.Buffer
+	return &TestCommandLine{
+		CommandLine: NewCommandLine(input, &buf),
+		output:      &buf,
+	}
+}
+
+func (t *TestCommandLine) AssertOutputContains(test *testing.T, want string) {
+	test.Helper()
+	got := t.output.String()
+	if !strings.Contains(got, want) {
+		test.Errorf("Expected output to contain %q, got: %s", want, got)
+	}
 }

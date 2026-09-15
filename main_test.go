@@ -1,20 +1,17 @@
 package main
 
 import (
-	"bytes"
 	"strings"
 	"testing"
 )
 
 func TestRunApp_QuitExitsCleanly(t *testing.T) {
 	input := strings.NewReader("exit\n")
-	var output bytes.Buffer
+	cli := NewTestCommandLine(input)
 
-	runApp(NewCommandLine(input, &output), fakeAssistant{}, fakeRunner{})
+	runApp(cli, fakeAssistant{}, fakeRunner{})
 
-	if !strings.Contains(output.String(), "Exiting kata trainer.") {
-		t.Errorf("Expected to exit.")
-	}
+	cli.AssertOutputContains(t, "Exiting kata trainer.")
 }
 
 type fakeAssistant struct{}
