@@ -2,7 +2,6 @@ package main
 
 import (
 	"io"
-	"os/exec"
 )
 
 type TestRunner interface {
@@ -10,18 +9,15 @@ type TestRunner interface {
 }
 
 type DotnetTestRunner struct {
-	output io.Writer
+	output        io.Writer
+	commandRunner CommandRunner
 }
 
 func NewDotnetTestRunner(output io.Writer) *DotnetTestRunner {
-	return &DotnetTestRunner{output: output}
+	return &DotnetTestRunner{output: output, commandRunner: *NewCommandRunner()}
 }
 
 func (runner DotnetTestRunner) Run(dir string) (passed bool) {
-	cmd := exec.Command("dotnet", "test")
-	cmd.Dir = dir
-	cmd.Stdout = runner.output
-	cmd.Stderr = runner.output
-	err := cmd.Run()
+	_, err := runner.commandRunner.Run("dotnet", []string{"test"}, dir, nil, runner.output)
 	return err == nil
 }

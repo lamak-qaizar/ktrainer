@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"os"
-	"os/exec"
 	"strings"
 )
 
@@ -12,11 +12,12 @@ type Assistant interface {
 }
 
 type ClaudeCLIAssistant struct {
-	auth *ClaudeAuth
+	auth          *ClaudeAuth
+	commandRunner CommandRunner
 }
 
 func NewClaudeCLIAssistant(auth *ClaudeAuth) *ClaudeCLIAssistant {
-	return &ClaudeCLIAssistant{auth: auth}
+	return &ClaudeCLIAssistant{auth: auth, commandRunner: *NewCommandRunner()}
 }
 
 func (assistant ClaudeCLIAssistant) invalidatePersistedTokenIfSessionHasExpired(output string, err error) {
@@ -33,11 +34,9 @@ func (assitant ClaudeCLIAssistant) ProposeChange(phase Phase, instruction string
 		phase.String(), instruction,
 	)
 
-	cmd := exec.Command("claude", "-p", prompt, "--allowedTools", "Edit", "--safe-mode")
-	cmd.Dir = kataDir
-	cmd.Env = append(os.Environ(), "CLAUDE_CODE_OAUTH_TOKEN="+assitant.auth.token)
+	env := append(os.Environ(), "CLAUDE_CODE_OAUTH_TOKEN="+assitant.auth.token)
+	output, err := assitant.commandRunner.Run("claude", []string{"-p", prompt, "--allowedTools", "Edit", "--safe-mode"}, kataDir, env, io.Discard)
 
-	output, err := cmd.CombinedOutput()
 	assitant.invalidatePersistedTokenIfSessionHasExpired(string(output), err)
 
 	return string(output), err
