@@ -37,17 +37,17 @@ func runApp(ui UI, assistant Assistant, testRunner TestRunner) {
 	}
 }
 
-func SetupClaudeAuth(ui UI) ClaudeAuth {
+func SetupClaudeAuth(ui UI) *ClaudeAuth {
 	token := LoadTokenFromConfig()
 	if token != "" {
-		return *NewClaudeAuth(token)
+		return NewClaudeAuth(token)
 	}
 
 	ui.Writeln("Run 'claude setup-token' and paste the token here.")
 	ui.Write("> ")
 	token = ui.Read()
 	SaveTokenToConfig(token, time.Now().Add(tokenTTL))
-	return *NewClaudeAuth(token)
+	return NewClaudeAuth(token)
 }
 
 func main() {
