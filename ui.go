@@ -36,5 +36,8 @@ func (ui *CommandLine) Writeln(format string, a ...interface{}) {
 func (ui *CommandLine) Read() string {
 	raw, _ := ui.reader.ReadString('\n')
 	return strings.TrimSpace(raw)
+}
 
+func (ui *CommandLine) Writer() io.Writer {
+	return ui.output
 }

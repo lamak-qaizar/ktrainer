@@ -38,8 +38,8 @@ func runApp(ui UI, assistant Assistant, testRunner TestRunner) {
 }
 
 func main() {
-	testRunner := NewDotnetTestRunner()
 	ui := NewCommandLine(os.Stdin, os.Stdout)
+	testRunner := NewDotnetTestRunner(ui.Writer())
 	assistant, err := NewClaudeCLIAssistant()
 	if err != nil {
 		fmt.Println("Failed to set up Claude CLI:", err)
