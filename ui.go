@@ -10,55 +10,55 @@ import (
 	"testing"
 )
 
-type UI interface {
+type UserInterface interface {
 	Write(format string, a ...interface{})
 	Writeln(format string, a ...interface{})
 	Read() string
 }
 
-type CommandLine struct {
+type UI struct {
 	reader *bufio.Reader
 	output io.Writer
 }
 
-func NewCommandLine() *CommandLine {
-	return &CommandLine{
+func NewUI() *UI {
+	return &UI{
 		reader: bufio.NewReader(os.Stdin),
 		output: os.Stdout,
 	}
 }
 
-func (ui *CommandLine) Write(format string, a ...interface{}) {
+func (ui *UI) Write(format string, a ...interface{}) {
 	fmt.Fprintf(ui.output, format, a...)
 }
 
-func (ui *CommandLine) Writeln(format string, a ...interface{}) {
+func (ui *UI) Writeln(format string, a ...interface{}) {
 	fmt.Fprintf(ui.output, format+"\n", a...)
 }
 
-func (ui *CommandLine) Read() string {
+func (ui *UI) Read() string {
 	raw, _ := ui.reader.ReadString('\n')
 	return strings.TrimSpace(raw)
 }
 
-func (ui *CommandLine) Writer() io.Writer {
+func (ui *UI) Writer() io.Writer {
 	return ui.output
 }
 
-type TestCommandLine struct {
-	*CommandLine
+type TestUI struct {
+	*UI
 	output *bytes.Buffer
 }
 
-func NewTestCommandLine(input io.Reader) *TestCommandLine {
+func NewTestUI(input io.Reader) *TestUI {
 	var buf bytes.Buffer
-	return &TestCommandLine{
-		CommandLine: &CommandLine{reader: bufio.NewReader(input), output: &buf},
-		output:      &buf,
+	return &TestUI{
+		UI:     &UI{reader: bufio.NewReader(input), output: &buf},
+		output: &buf,
 	}
 }
 
-func (t *TestCommandLine) AssertOutputContains(test *testing.T, want string) {
+func (t *TestUI) AssertOutputContains(test *testing.T, want string) {
 	test.Helper()
 	got := t.output.String()
 	if !strings.Contains(got, want) {

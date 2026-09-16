@@ -7,11 +7,11 @@ import (
 
 func TestRunApp_QuitExitsCleanly(t *testing.T) {
 	input := strings.NewReader("exit\n")
-	cli := NewTestCommandLine(input)
+	ui := NewTestUI(input)
 
-	runApp(cli, fakeAssistant{}, fakeRunner{})
+	runApp(ui, fakeAssistant{}, fakeRunner{})
 
-	cli.AssertOutputContains(t, "Exiting kata trainer.")
+	ui.AssertOutputContains(t, "Exiting kata trainer.")
 }
 
 type fakeAssistant struct{}

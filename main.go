@@ -6,7 +6,7 @@ import (
 
 const KATA_DIR string = "mars-rover/MarsRover"
 
-func runApp(ui UI, assistant Assistant, testRunner TestRunner) {
+func runApp(ui UserInterface, assistant Assistant, testRunner TestRunner) {
 	machine := NewTDDStateMachine()
 
 	for {
@@ -36,7 +36,7 @@ func runApp(ui UI, assistant Assistant, testRunner TestRunner) {
 	}
 }
 
-func SetupClaudeAuth(ui UI) *ClaudeAuth {
+func SetupClaudeAuth(ui UserInterface) *ClaudeAuth {
 	token := LoadTokenFromConfig()
 	if token != "" {
 		return NewClaudeAuth(token)
@@ -50,7 +50,7 @@ func SetupClaudeAuth(ui UI) *ClaudeAuth {
 }
 
 func main() {
-	ui := NewCommandLine()
+	ui := NewUI()
 	commandRunner := NewCommandRunner()
 	testRunner := NewDotnetTestRunner(ui.Writer(), commandRunner)
 	auth := SetupClaudeAuth(ui)
