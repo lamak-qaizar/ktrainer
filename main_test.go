@@ -14,4 +14,5 @@ func TestRunApp_QuitExitsCleanly(t *testing.T) {
 		NewDotnetTestRunner(ui.Writer(), commandRunner))
 
 	ui.AssertOutputContains(t, "Exiting kata trainer.")
+	commandRunner.AssertCommands(t, []string{})
 }

@@ -4,7 +4,9 @@ import (
 	"bytes"
 	"io"
 	"os/exec"
+	"reflect"
 	"strings"
+	"testing"
 )
 
 type Runner interface {
@@ -36,15 +38,23 @@ func (CommandRunner) Run(name string, args []string, dir string, env []string, o
 }
 
 type TestCommandRunner struct {
-	Calls []string
+	calls []string
 }
 
 func NewTestCommandRunner() *TestCommandRunner {
-	return &TestCommandRunner{}
+	return &TestCommandRunner{calls: []string{}}
 }
 
 func (runner *TestCommandRunner) Run(name string, args []string, dir string, env []string, output io.Writer) (string, error) {
 	command := strings.Join(append([]string{name}, args...), " ")
-	runner.Calls = append(runner.Calls, command)
+	runner.calls = append(runner.calls, command)
 	return "", nil
+}
+
+func (runner *TestCommandRunner) AssertCommands(test *testing.T, want []string) {
+	test.Helper()
+	got := runner.calls
+	if !reflect.DeepEqual(got, want) {
+		test.Errorf("Expected commands: %q, got: %s", want, got)
+	}
 }
