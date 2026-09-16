@@ -12,12 +12,12 @@ type Assistant interface {
 }
 
 type ClaudeCLIAssistant struct {
-	auth          *ClaudeAuth
-	commandRunner *CommandRunner
+	auth   *ClaudeAuth
+	runner Runner
 }
 
-func NewClaudeCLIAssistant(auth *ClaudeAuth, commandRunner *CommandRunner) *ClaudeCLIAssistant {
-	return &ClaudeCLIAssistant{auth: auth, commandRunner: commandRunner}
+func NewClaudeCLIAssistant(auth *ClaudeAuth, runner Runner) *ClaudeCLIAssistant {
+	return &ClaudeCLIAssistant{auth: auth, runner: runner}
 }
 
 func (assistant ClaudeCLIAssistant) invalidatePersistedTokenIfSessionHasExpired(output string, err error) {
@@ -35,7 +35,7 @@ func (assitant ClaudeCLIAssistant) ProposeChange(phase Phase, instruction string
 	)
 
 	env := append(os.Environ(), "CLAUDE_CODE_OAUTH_TOKEN="+assitant.auth.token)
-	output, err := assitant.commandRunner.Run("claude", []string{"-p", prompt, "--allowedTools", "Edit", "--safe-mode"}, kataDir, env, io.Discard)
+	output, err := assitant.runner.Run("claude", []string{"-p", prompt, "--allowedTools", "Edit", "--safe-mode"}, kataDir, env, io.Discard)
 
 	assitant.invalidatePersistedTokenIfSessionHasExpired(string(output), err)
 
