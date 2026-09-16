@@ -51,8 +51,9 @@ func SetupClaudeAuth(ui UI) *ClaudeAuth {
 
 func main() {
 	ui := NewStdIOCommandLine()
-	testRunner := NewDotnetTestRunner(ui.Writer())
+	commandRunner := NewCommandRunner()
+	testRunner := NewDotnetTestRunner(ui.Writer(), commandRunner)
 	auth := SetupClaudeAuth(ui)
-	assistant := NewClaudeCLIAssistant(auth)
+	assistant := NewClaudeCLIAssistant(auth, commandRunner)
 	runApp(ui, assistant, testRunner)
 }

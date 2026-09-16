@@ -13,11 +13,11 @@ type Assistant interface {
 
 type ClaudeCLIAssistant struct {
 	auth          *ClaudeAuth
-	commandRunner CommandRunner
+	commandRunner *CommandRunner
 }
 
-func NewClaudeCLIAssistant(auth *ClaudeAuth) *ClaudeCLIAssistant {
-	return &ClaudeCLIAssistant{auth: auth, commandRunner: *NewCommandRunner()}
+func NewClaudeCLIAssistant(auth *ClaudeAuth, commandRunner *CommandRunner) *ClaudeCLIAssistant {
+	return &ClaudeCLIAssistant{auth: auth, commandRunner: commandRunner}
 }
 
 func (assistant ClaudeCLIAssistant) invalidatePersistedTokenIfSessionHasExpired(output string, err error) {

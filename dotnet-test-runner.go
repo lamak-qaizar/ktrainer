@@ -10,11 +10,11 @@ type TestRunner interface {
 
 type DotnetTestRunner struct {
 	output        io.Writer
-	commandRunner CommandRunner
+	commandRunner *CommandRunner
 }
 
-func NewDotnetTestRunner(output io.Writer) *DotnetTestRunner {
-	return &DotnetTestRunner{output: output, commandRunner: *NewCommandRunner()}
+func NewDotnetTestRunner(output io.Writer, commandRunner *CommandRunner) *DotnetTestRunner {
+	return &DotnetTestRunner{output: output, commandRunner: commandRunner}
 }
 
 func (runner DotnetTestRunner) Run(dir string) (passed bool) {
