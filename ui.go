@@ -21,15 +21,11 @@ type CommandLine struct {
 	output io.Writer
 }
 
-func NewCommandLine(input io.Reader, output io.Writer) *CommandLine {
+func NewCommandLine() *CommandLine {
 	return &CommandLine{
-		reader: bufio.NewReader(input),
-		output: output,
+		reader: bufio.NewReader(os.Stdin),
+		output: os.Stdout,
 	}
-}
-
-func NewStdIOCommandLine() *CommandLine {
-	return NewCommandLine(os.Stdin, os.Stdout)
 }
 
 func (ui *CommandLine) Write(format string, a ...interface{}) {
@@ -57,7 +53,7 @@ type TestCommandLine struct {
 func NewTestCommandLine(input io.Reader) *TestCommandLine {
 	var buf bytes.Buffer
 	return &TestCommandLine{
-		CommandLine: NewCommandLine(input, &buf),
+		CommandLine: &CommandLine{reader: bufio.NewReader(input), output: &buf},
 		output:      &buf,
 	}
 }

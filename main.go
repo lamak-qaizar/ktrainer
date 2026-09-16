@@ -50,7 +50,7 @@ func SetupClaudeAuth(ui UI) *ClaudeAuth {
 }
 
 func main() {
-	ui := NewStdIOCommandLine()
+	ui := NewCommandLine()
 	commandRunner := NewCommandRunner()
 	testRunner := NewDotnetTestRunner(ui.Writer(), commandRunner)
 	auth := SetupClaudeAuth(ui)
