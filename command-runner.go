@@ -55,6 +55,6 @@ func (runner *TestCommandRunner) AssertCommands(test *testing.T, want []string) 
 	test.Helper()
 	got := runner.calls
 	if !reflect.DeepEqual(got, want) {
-		test.Errorf("Expected commands: %q, got: %s", want, got)
+		test.Errorf("Expected commands: %q, got: %q", want, got)
 	}
 }

@@ -29,11 +29,11 @@ func NewUI() *UI {
 }
 
 func (ui *UI) Write(str string) {
-	fmt.Fprintf(ui.output, str)
+	fmt.Fprintf(ui.output, "%s", str)
 }
 
-func (ui *UI) Writeln(format string) {
-	fmt.Fprintf(ui.output, format+"\n")
+func (ui *UI) Writeln(str string) {
+	fmt.Fprintf(ui.output, "%s", str+"\n")
 }
 
 func (ui *UI) Read() string {

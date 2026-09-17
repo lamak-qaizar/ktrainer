@@ -1,11 +1,16 @@
 package main
 
 import (
-	"fmt"
+	"bytes"
+	"embed"
+	"html/template"
 	"io"
 	"os"
 	"strings"
 )
+
+//go:embed prompts/*.tmpl
+var promptFiles embed.FS
 
 type Assistant interface {
 	ProposeChange(phase Phase, instruction string, kataDir string) (string, error)
@@ -28,14 +33,13 @@ func (assistant ClaudeCLIAssistant) invalidatePersistedTokenIfSessionHasExpired(
 	}
 }
 
-func (assitant ClaudeCLIAssistant) ProposeChange(phase Phase, instruction string, kataDir string) (string, error) {
-	prompt := fmt.Sprintf(
-		"You are helping with the %s phase of TDD. Make ONLY the following small, specific change, nothing else: %s. Do not run any commands, do not run tests, do not verify your change, just make the edit and stop.",
-		phase.String(), instruction,
-	)
+func (assitant ClaudeCLIAssistant) ProposeChange(phase Phase, instructions string, kataDir string) (string, error) {
+	tmpl, _ := template.ParseFS(promptFiles, "prompts/test.tmpl")
+	var prompt bytes.Buffer
+	tmpl.Execute(&prompt, struct{ Instructions string }{Instructions: instructions})
 
 	env := append(os.Environ(), "CLAUDE_CODE_OAUTH_TOKEN="+assitant.auth.token)
-	output, err := assitant.runner.Run("claude", []string{"-p", prompt, "--allowedTools", "Edit", "--safe-mode"}, kataDir, env, io.Discard)
+	output, err := assitant.runner.Run("claude", []string{"-p", prompt.String(), "--allowedTools", "Edit", "--safe-mode"}, kataDir, env, io.Discard)
 
 	assitant.invalidatePersistedTokenIfSessionHasExpired(string(output), err)
 
