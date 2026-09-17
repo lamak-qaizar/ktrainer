@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"time"
 )
 
@@ -10,8 +11,7 @@ func runApp(ui UserInterface, assistant Assistant, testRunner TestRunner) {
 	machine := NewTDDStateMachine()
 
 	for {
-		ui.Writeln("\n--- Phase: %s ---", machine.Phase())
-		ui.Writeln("Type an instruction for Claude")
+		ui.Writeln(fmt.Sprintf("\n %s: Type an instruction for Claude", machine.Phase()))
 		ui.Write("> ")
 
 		input := ui.Read()
@@ -23,7 +23,7 @@ func runApp(ui UserInterface, assistant Assistant, testRunner TestRunner) {
 
 		output, err := assistant.ProposeChange(machine.Phase(), input, KATA_DIR)
 		if err != nil {
-			ui.Writeln("Error calling Claude:", output)
+			ui.Writeln("Error calling Claude:" + output)
 			continue
 		}
 		ui.Writeln(output)
@@ -31,7 +31,7 @@ func runApp(ui UserInterface, assistant Assistant, testRunner TestRunner) {
 		ui.Writeln("Running tests...")
 		testsPassed := testRunner.Run(KATA_DIR)
 
-		ui.Writeln("Tests passed:", testsPassed)
+		ui.Writeln(fmt.Sprintf("Tests passed: %t", testsPassed))
 		machine.Advance(testsPassed)
 	}
 }

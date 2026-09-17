@@ -11,8 +11,8 @@ import (
 )
 
 type UserInterface interface {
-	Write(format string, a ...interface{})
-	Writeln(format string, a ...interface{})
+	Write(format string)
+	Writeln(format string)
 	Read() string
 }
 
@@ -28,12 +28,12 @@ func NewUI() *UI {
 	}
 }
 
-func (ui *UI) Write(format string, a ...interface{}) {
-	fmt.Fprintf(ui.output, format, a...)
+func (ui *UI) Write(str string) {
+	fmt.Fprintf(ui.output, str)
 }
 
-func (ui *UI) Writeln(format string, a ...interface{}) {
-	fmt.Fprintf(ui.output, format+"\n", a...)
+func (ui *UI) Writeln(format string) {
+	fmt.Fprintf(ui.output, format+"\n")
 }
 
 func (ui *UI) Read() string {
