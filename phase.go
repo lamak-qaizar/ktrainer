@@ -1,5 +1,7 @@
 package main
 
+import "testing"
+
 type Phase int
 
 const (
@@ -18,6 +20,11 @@ func (p Phase) String() string {
 		return "Refactor"
 	}
 	return "UNKNOWN"
+}
+
+type TDD interface {
+	Phase() Phase
+	Advance(testsPassed bool)
 }
 
 type TDDStateMachine struct {
@@ -44,5 +51,29 @@ func (m *TDDStateMachine) Advance(testsPassed bool) {
 		}
 	case Refactor:
 		m.phase = Refactor
+	}
+}
+
+type TestTDDStateMachine struct {
+	*TDDStateMachine
+	t              *testing.T
+	expectedPhases []Phase
+	pos            int
+}
+
+func NewTestTDDStateMachine(t *testing.T, expected []Phase) *TestTDDStateMachine {
+	return &TestTDDStateMachine{
+		TDDStateMachine: NewTDDStateMachine(),
+		t:               t,
+		expectedPhases:  expected,
+	}
+}
+
+func (tdd *TestTDDStateMachine) Advance(testsPassed bool) {
+	tdd.TDDStateMachine.Advance(testsPassed)
+
+	expected := tdd.expectedPhases[tdd.pos]
+	if tdd.Phase() != expected {
+		tdd.t.Fatalf("Expected TDD phase %s, got: %s", expected, tdd.Phase())
 	}
 }

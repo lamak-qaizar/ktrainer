@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"testing"
 )
@@ -26,7 +27,7 @@ func TestRunApp_Prompt(t *testing.T) {
 				Input: "write a test",
 				Commands: []CommandExpected{
 					{Command: claudeCommand("Prompt: write a test"), Mock: MockResponse{Output: "test edited"}},
-					{Command: "dotnet test", Mock: MockResponse{Output: "Tests passed."}},
+					{Command: "dotnet test", Mock: MockResponse{Err: errors.New("")}},
 				},
 				ExpectPhase: Green,
 			},

@@ -41,12 +41,22 @@ func (scenario *Scenario) Commands() []CommandExpected {
 	return commands
 }
 
+func (scenario *Scenario) Phases() []Phase {
+	var phases []Phase
+	for _, step := range scenario.Steps {
+		phases = append(phases, step.ExpectPhase)
+	}
+	return phases
+}
+
 func (scenario Scenario) Run(t *testing.T) {
 	input := strings.NewReader(scenario.NewlineSeperatedInputs())
 	ui := NewTestUI(input)
 	commandRunner := NewTestCommandRunner(t, scenario.Commands())
+	tdd := NewTestTDDStateMachine(t, scenario.Phases())
 
 	runApp(ui,
 		NewClaudeCLIAssistant(NewClaudeAuth(""), commandRunner),
-		NewDotnetTestRunner(ui.Writer(), commandRunner))
+		NewDotnetTestRunner(ui.Writer(), commandRunner),
+		tdd)
 }
