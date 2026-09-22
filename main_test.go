@@ -11,6 +11,7 @@ func claudeCommand(prompt string) string {
 }
 
 func TestRunApp_QuitExitsCleanly(t *testing.T) {
+	// "exit" input is added by runner
 	Scenario{}.Run(t)
 }
 
