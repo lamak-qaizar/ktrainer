@@ -13,23 +13,26 @@ func TestRunApp_QuitExitsCleanly(t *testing.T) {
 	Scenario{
 		Steps: []Step{
 			{
-				Input:       "exit\n",
-				Commands:    []CommandExpected{},
-				ExpectPhase: Red,
+				Input: "exit",
 			},
 		},
 	}.Run(t)
 }
 
-// func TestRunApp_Prompt(t *testing.T) {
-// 	input := strings.NewReader("write a test\n" + "exit\n")
-// 	ui := NewTestUI(input)
-// 	commandRunner := NewTestCommandRunner()
-
-// 	runApp(ui, NewClaudeCLIAssistant(NewClaudeAuth(""), commandRunner),
-// 		NewDotnetTestRunner(ui.Writer(), commandRunner))
-
-// 	commandRunner.AssertCommands(t, []string{
-// 		claudeCommand("Prompt: write a test"),
-// 		"dotnet test"})
-// }
+func TestRunApp_Prompt(t *testing.T) {
+	Scenario{
+		Steps: []Step{
+			{
+				Input: "write a test",
+				Commands: []CommandExpected{
+					{Command: claudeCommand("Prompt: write a test"), Mock: MockResponse{Output: "test edited"}},
+					{Command: "dotnet test", Mock: MockResponse{Output: "Tests passed."}},
+				},
+				ExpectPhase: Green,
+			},
+			{
+				Input: "exit",
+			},
+		},
+	}.Run(t)
+}
