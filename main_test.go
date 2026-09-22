@@ -6,7 +6,8 @@ import (
 	"testing"
 )
 
-func claudeCommand(prompt string) string {
+func claudeCmd(template string, userPrompt string) string {
+	prompt := promptFrom(template, userPrompt)
 	return fmt.Sprintf("claude -p %s --allowedTools Edit --safe-mode", prompt)
 }
 
@@ -21,7 +22,7 @@ func TestRunApp_RedToGreenWhenTestFails(t *testing.T) {
 			{
 				Input: "write a test",
 				Commands: []CommandExpected{
-					{Command: claudeCommand("Prompt: write a test"), Mock: MockResponse{Output: "test edited"}},
+					{Command: claudeCmd("red.tmpl", "write a test"), Mock: MockResponse{Output: "test edited"}},
 					{Command: "dotnet test", Mock: MockResponse{Err: errors.New("")}},
 				},
 				ExpectPhase: Green,
@@ -36,7 +37,7 @@ func TestRunApp_StayOnRedWhenTestPasses(t *testing.T) {
 			{
 				Input: "write a test",
 				Commands: []CommandExpected{
-					{Command: claudeCommand("Prompt: write a test"), Mock: MockResponse{Output: "test edited"}},
+					{Command: claudeCmd("red.tmpl", "write a test"), Mock: MockResponse{Output: "test edited"}},
 					{Command: "dotnet test", Mock: MockResponse{Output: ""}},
 				},
 				ExpectPhase: Red,
