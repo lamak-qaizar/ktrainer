@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"strings"
 	"testing"
 )
@@ -8,6 +9,10 @@ import (
 type MockResponse struct {
 	Output string
 	Err    error
+}
+
+func NewErrorResponse() MockResponse {
+	return MockResponse{Err: errors.New("")}
 }
 
 type CommandExpected struct {
