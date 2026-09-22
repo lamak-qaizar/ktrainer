@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"io"
 	"os/exec"
-	"reflect"
 	"strings"
 	"testing"
 )
@@ -38,23 +37,23 @@ func (CommandRunner) Run(name string, args []string, dir string, env []string, o
 }
 
 type TestCommandRunner struct {
-	calls []string
+	t        *testing.T
+	expected []CommandExpected
+	pos      int
 }
 
-func NewTestCommandRunner() *TestCommandRunner {
-	return &TestCommandRunner{calls: []string{}}
+func NewTestCommandRunner(t *testing.T, expected []CommandExpected) *TestCommandRunner {
+	return &TestCommandRunner{t: t, expected: expected, pos: 0}
 }
 
 func (runner *TestCommandRunner) Run(name string, args []string, dir string, env []string, output io.Writer) (string, error) {
 	command := strings.Join(append([]string{name}, args...), " ")
-	runner.calls = append(runner.calls, command)
-	return "", nil
-}
 
-func (runner *TestCommandRunner) AssertCommands(test *testing.T, want []string) {
-	test.Helper()
-	got := runner.calls
-	if !reflect.DeepEqual(got, want) {
-		test.Errorf("Expected commands: %q, got: %q", want, got)
+	exp := runner.expected[runner.pos]
+	if command != exp.Command {
+		runner.t.Fatalf("Expected command: %q, got: %q", exp.Command, command)
 	}
+
+	runner.pos++
+	return exp.Mock.Output, exp.Mock.Err
 }

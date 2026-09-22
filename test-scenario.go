@@ -1,0 +1,52 @@
+package main
+
+import (
+	"strings"
+	"testing"
+)
+
+type MockResponse struct {
+	Output string
+	Err    error
+}
+
+type CommandExpected struct {
+	Command string
+	Mock    MockResponse
+}
+
+type Step struct {
+	Input       string
+	Commands    []CommandExpected
+	ExpectPhase Phase
+}
+
+type Scenario struct {
+	Steps []Step
+}
+
+func (scenario *Scenario) NewlineSeperatedInputs() string {
+	var inputs []string
+	for _, step := range scenario.Steps {
+		inputs = append(inputs, step.Input)
+	}
+	return strings.Join(inputs, "\n") + "\n"
+}
+
+func (scenario *Scenario) Commands() []CommandExpected {
+	var commands []CommandExpected
+	for _, step := range scenario.Steps {
+		commands = append(commands, step.Commands...)
+	}
+	return commands
+}
+
+func (scenario Scenario) Run(t *testing.T) {
+	input := strings.NewReader(scenario.NewlineSeperatedInputs())
+	ui := NewTestUI(input)
+	commandRunner := NewTestCommandRunner(t, scenario.Commands())
+
+	runApp(ui,
+		NewClaudeCLIAssistant(NewClaudeAuth(""), commandRunner),
+		NewDotnetTestRunner(ui.Writer(), commandRunner))
+}
