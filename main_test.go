@@ -20,7 +20,7 @@ func TestRunApp_QuitExitsCleanly(t *testing.T) {
 	}.Run(t)
 }
 
-func TestRunApp_Prompt(t *testing.T) {
+func TestRunApp_RedToGreenWhenTestFails(t *testing.T) {
 	Scenario{
 		Steps: []Step{
 			{
@@ -30,6 +30,24 @@ func TestRunApp_Prompt(t *testing.T) {
 					{Command: "dotnet test", Mock: MockResponse{Err: errors.New("")}},
 				},
 				ExpectPhase: Green,
+			},
+			{
+				Input: "exit",
+			},
+		},
+	}.Run(t)
+}
+
+func TestRunApp_StayOnRedWhenTestPasses(t *testing.T) {
+	Scenario{
+		Steps: []Step{
+			{
+				Input: "write a test",
+				Commands: []CommandExpected{
+					{Command: claudeCommand("Prompt: write a test"), Mock: MockResponse{Output: "test edited"}},
+					{Command: "dotnet test", Mock: MockResponse{Output: ""}},
+				},
+				ExpectPhase: Red,
 			},
 			{
 				Input: "exit",
