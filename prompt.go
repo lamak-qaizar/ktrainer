@@ -9,8 +9,8 @@ import (
 //go:embed prompts/*.tmpl
 var promptFiles embed.FS
 
-func promptFrom(path string, instructions string) string {
-	tmpl, _ := template.ParseFS(promptFiles, "prompts/"+path)
+func promptFrom(templatePath string, instructions string) string {
+	tmpl, _ := template.ParseFS(promptFiles, "prompts/"+templatePath)
 	var prompt bytes.Buffer
 	tmpl.Execute(&prompt, struct{ Instructions string }{Instructions: instructions})
 	return prompt.String()

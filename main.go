@@ -19,7 +19,7 @@ func runApp(ui UserInterface, assistant Assistant, testRunner TestRunner, tdd TD
 			break
 		}
 
-		output, err := assistant.ProposeChange(tdd.Phase(), input, KATA_DIR)
+		output, err := assistant.ProposeChange(tdd.Prompt(input), KATA_DIR)
 		if err != nil {
 			ui.Writeln("Error calling Claude:" + output)
 			continue

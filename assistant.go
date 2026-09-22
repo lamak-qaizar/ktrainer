@@ -7,7 +7,7 @@ import (
 )
 
 type Assistant interface {
-	ProposeChange(phase Phase, instruction string, kataDir string) (string, error)
+	ProposeChange(instruction string, kataDir string) (string, error)
 }
 
 type ClaudeCLIAssistant struct {
@@ -27,10 +27,10 @@ func (assistant ClaudeCLIAssistant) invalidatePersistedTokenIfSessionHasExpired(
 	}
 }
 
-func (assitant ClaudeCLIAssistant) ProposeChange(phase Phase, instructions string, kataDir string) (string, error) {
+func (assitant ClaudeCLIAssistant) ProposeChange(instructions string, kataDir string) (string, error) {
 	env := append(os.Environ(), "CLAUDE_CODE_OAUTH_TOKEN="+assitant.auth.token)
 	output, err := assitant.runner.Run("claude",
-		[]string{"-p", promptFrom("red.tmpl", instructions), "--allowedTools", "Edit", "--safe-mode"},
+		[]string{"-p", instructions, "--allowedTools", "Edit", "--safe-mode"},
 		kataDir, env, io.Discard)
 
 	assitant.invalidatePersistedTokenIfSessionHasExpired(string(output), err)

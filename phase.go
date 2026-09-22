@@ -25,6 +25,7 @@ func (p Phase) String() string {
 type TDD interface {
 	Phase() Phase
 	Advance(testsPassed bool)
+	Prompt(userInput string) string
 }
 
 type TDDStateMachine struct {
@@ -54,6 +55,16 @@ func (m *TDDStateMachine) Advance(testsPassed bool) {
 	}
 }
 
+func (m *TDDStateMachine) Prompt(userInput string) string {
+	switch m.phase {
+	case Red:
+		return promptFrom("red.tmpl", userInput)
+	case Green:
+		return promptFrom("green.tmpl", userInput)
+	}
+	panic("Undefined phase :o")
+}
+
 type TestTDDStateMachine struct {
 	*TDDStateMachine
 	t              *testing.T
@@ -74,6 +85,7 @@ func (tdd *TestTDDStateMachine) Advance(testsPassed bool) {
 
 	expected := tdd.expectedPhases[tdd.pos]
 	if tdd.Phase() != expected {
-		tdd.t.Fatalf("Expected TDD phase %s, got: %s", expected, tdd.Phase())
+		tdd.t.Fatalf("[Step %d] Expected TDD phase %s, got: %s", tdd.pos, expected, tdd.Phase())
 	}
+	tdd.pos++
 }

@@ -51,7 +51,7 @@ func (runner *TestCommandRunner) Run(name string, args []string, dir string, env
 
 	exp := runner.expected[runner.pos]
 	if command != exp.Command {
-		runner.t.Fatalf("Expected command: %q, got: %q", exp.Command, command)
+		runner.t.Fatalf("Expected command:\n%q\nGot:\n%q", exp.Command, command)
 	}
 
 	runner.pos++

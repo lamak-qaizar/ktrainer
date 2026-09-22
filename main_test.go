@@ -45,25 +45,25 @@ func TestRunApp_StayOnRedWhenTestPasses(t *testing.T) {
 	}.Run(t)
 }
 
-// func TestRunApp_RefactorAfterTestsPassOnGreen(t *testing.T) {
-// 	Scenario{
-// 		Steps: []Step{
-// 			{
-// 				Input: "write a test",
-// 				Commands: []CommandExpected{
-// 					{Command: claudeCmd("red.tmpl", "write a test"), Mock: MockResponse{Output: "test edited"}},
-// 					{Command: "dotnet test", Mock: MockResponse{Output: ""}},
-// 				},
-// 				ExpectPhase: Red,
-// 			},
-// 			{
-// 				Input: "pass the test",
-// 				Commands: []CommandExpected{
-// 					{Command: claudeCmd("red.tmpl", "pass the test"), Mock: MockResponse{Output: "impl edited"}},
-// 					{Command: "dotnet test", Mock: MockResponse{Output: ""}},
-// 				},
-// 				ExpectPhase: Red,
-// 			},
-// 		},
-// 	}.Run(t)
-// }
+func TestRunApp_RefactorAfterTestsPassOnGreen(t *testing.T) {
+	Scenario{
+		Steps: []Step{
+			{
+				Input: "write a test",
+				Commands: []CommandExpected{
+					{Command: claudeCmd("red.tmpl", "write a test")},
+					{Command: "dotnet test", Mock: NewErrorResponse()},
+				},
+				ExpectPhase: Green,
+			},
+			{
+				Input: "pass the test",
+				Commands: []CommandExpected{
+					{Command: claudeCmd("green.tmpl", "pass the test")},
+					{Command: "dotnet test"},
+				},
+				ExpectPhase: Refactor,
+			},
+		},
+	}.Run(t)
+}
