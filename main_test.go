@@ -67,3 +67,41 @@ func TestRunApp_RefactorAfterTestsPassOnGreen(t *testing.T) {
 		},
 	}.Run(t)
 }
+
+func TestRunApp_RefactorStaysOnRefactorUnlessUserExplicitySelectsNext(t *testing.T) {
+	Scenario{
+		Steps: []Step{
+			{
+				Input: "write a test",
+				Commands: []CommandExpected{
+					{Command: claudeCmd("red.tmpl", "write a test")},
+					{Command: "dotnet test", Mock: NewErrorResponse()},
+				},
+				ExpectPhase: Green,
+			},
+			{
+				Input: "pass the test",
+				Commands: []CommandExpected{
+					{Command: claudeCmd("green.tmpl", "pass the test")},
+					{Command: "dotnet test"},
+				},
+				ExpectPhase: Refactor,
+			},
+			{
+				Input: "refactor the code",
+				Commands: []CommandExpected{
+					{Command: claudeCmd("refactor.tmpl", "refactor the code")},
+					{Command: "dotnet test"},
+				},
+				ExpectPhase: Refactor,
+			},
+			{
+				Input: "next",
+				Commands: []CommandExpected{
+					{Command: "dotnet test"},
+				},
+				ExpectPhase: Red,
+			},
+		},
+	}.Run(t)
+}

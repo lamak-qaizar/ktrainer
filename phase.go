@@ -26,6 +26,7 @@ type TDD interface {
 	Phase() Phase
 	Advance(testsPassed bool)
 	Prompt(userInput string) string
+	RefactorDone(testsPassed bool)
 }
 
 type TDDStateMachine struct {
@@ -55,12 +56,20 @@ func (m *TDDStateMachine) Advance(testsPassed bool) {
 	}
 }
 
+func (m *TDDStateMachine) RefactorDone(testsPassed bool) {
+	if m.phase == Refactor && testsPassed {
+		m.phase = Red
+	}
+}
+
 func (m *TDDStateMachine) Prompt(userInput string) string {
 	switch m.phase {
 	case Red:
 		return promptFrom("red.tmpl", userInput)
 	case Green:
 		return promptFrom("green.tmpl", userInput)
+	case Refactor:
+		return promptFrom("refactor.tmpl", userInput)
 	}
 	panic("Undefined phase :o")
 }

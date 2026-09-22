@@ -19,6 +19,12 @@ func runApp(ui UserInterface, assistant Assistant, testRunner TestRunner, tdd TD
 			break
 		}
 
+		if input == "next" && tdd.Phase() == Refactor {
+			testsPassed := testRunner.Run(KATA_DIR)
+			tdd.RefactorDone(testsPassed)
+			continue
+		}
+
 		output, err := assistant.ProposeChange(tdd.Prompt(input), KATA_DIR)
 		if err != nil {
 			ui.Writeln("Error calling Claude:" + output)
@@ -28,8 +34,8 @@ func runApp(ui UserInterface, assistant Assistant, testRunner TestRunner, tdd TD
 
 		ui.Writeln("Running tests...")
 		testsPassed := testRunner.Run(KATA_DIR)
-
 		ui.Writeln(fmt.Sprintf("Tests passed: %t", testsPassed))
+
 		tdd.Advance(testsPassed)
 	}
 }
