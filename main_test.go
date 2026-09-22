@@ -11,13 +11,7 @@ func claudeCommand(prompt string) string {
 }
 
 func TestRunApp_QuitExitsCleanly(t *testing.T) {
-	Scenario{
-		Steps: []Step{
-			{
-				Input: "exit",
-			},
-		},
-	}.Run(t)
+	Scenario{}.Run(t)
 }
 
 func TestRunApp_RedToGreenWhenTestFails(t *testing.T) {
@@ -30,9 +24,6 @@ func TestRunApp_RedToGreenWhenTestFails(t *testing.T) {
 					{Command: "dotnet test", Mock: MockResponse{Err: errors.New("")}},
 				},
 				ExpectPhase: Green,
-			},
-			{
-				Input: "exit",
 			},
 		},
 	}.Run(t)
@@ -48,9 +39,6 @@ func TestRunApp_StayOnRedWhenTestPasses(t *testing.T) {
 					{Command: "dotnet test", Mock: MockResponse{Output: ""}},
 				},
 				ExpectPhase: Red,
-			},
-			{
-				Input: "exit",
 			},
 		},
 	}.Run(t)

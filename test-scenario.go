@@ -26,6 +26,10 @@ type Scenario struct {
 }
 
 func (scenario *Scenario) NewlineSeperatedInputs() string {
+	if len(scenario.Steps) == 0 {
+		return ""
+	}
+
 	var inputs []string
 	for _, step := range scenario.Steps {
 		inputs = append(inputs, step.Input)
@@ -50,7 +54,7 @@ func (scenario *Scenario) Phases() []Phase {
 }
 
 func (scenario Scenario) Run(t *testing.T) {
-	input := strings.NewReader(scenario.NewlineSeperatedInputs())
+	input := strings.NewReader(scenario.NewlineSeperatedInputs() + "exit\n")
 	ui := NewTestUI(input)
 	commandRunner := NewTestCommandRunner(t, scenario.Commands())
 	tdd := NewTestTDDStateMachine(t, scenario.Phases())
