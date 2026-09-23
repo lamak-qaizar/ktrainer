@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
+	"kata-trainer/tdd"
 	"testing"
 )
 
 func claudeCmd(template string, userPrompt string) string {
-	prompt := promptFrom(template, userPrompt)
+	prompt := tdd.PromptFrom(template, userPrompt)
 	return fmt.Sprintf("claude -p %s --allowedTools Edit --safe-mode", prompt)
 }
 
@@ -24,7 +25,7 @@ func TestRunApp_RedToGreenWhenTestFails(t *testing.T) {
 					{Command: claudeCmd("red.tmpl", "write a test")},
 					{Command: "dotnet test", Mock: NewErrorResponse()},
 				},
-				ExpectPhase: Green,
+				ExpectPhase: tdd.Green,
 			},
 		},
 	}.Run(t)
@@ -39,7 +40,7 @@ func TestRunApp_StayOnRedWhenTestPasses(t *testing.T) {
 					{Command: claudeCmd("red.tmpl", "write a test")},
 					{Command: "dotnet test"},
 				},
-				ExpectPhase: Red,
+				ExpectPhase: tdd.Red,
 			},
 		},
 	}.Run(t)
@@ -54,7 +55,7 @@ func TestRunApp_RefactorAfterTestsPassOnGreen(t *testing.T) {
 					{Command: claudeCmd("red.tmpl", "write a test")},
 					{Command: "dotnet test", Mock: NewErrorResponse()},
 				},
-				ExpectPhase: Green,
+				ExpectPhase: tdd.Green,
 			},
 			{
 				Input: "pass the test",
@@ -62,7 +63,7 @@ func TestRunApp_RefactorAfterTestsPassOnGreen(t *testing.T) {
 					{Command: claudeCmd("green.tmpl", "pass the test")},
 					{Command: "dotnet test"},
 				},
-				ExpectPhase: Refactor,
+				ExpectPhase: tdd.Refactor,
 			},
 		},
 	}.Run(t)
@@ -77,7 +78,7 @@ func TestRunApp_RefactorStaysOnRefactorUnlessUserExplicitySelectsNext(t *testing
 					{Command: claudeCmd("red.tmpl", "write a test")},
 					{Command: "dotnet test", Mock: NewErrorResponse()},
 				},
-				ExpectPhase: Green,
+				ExpectPhase: tdd.Green,
 			},
 			{
 				Input: "pass the test",
@@ -85,7 +86,7 @@ func TestRunApp_RefactorStaysOnRefactorUnlessUserExplicitySelectsNext(t *testing
 					{Command: claudeCmd("green.tmpl", "pass the test")},
 					{Command: "dotnet test"},
 				},
-				ExpectPhase: Refactor,
+				ExpectPhase: tdd.Refactor,
 			},
 			{
 				Input: "refactor the code",
@@ -93,14 +94,14 @@ func TestRunApp_RefactorStaysOnRefactorUnlessUserExplicitySelectsNext(t *testing
 					{Command: claudeCmd("refactor.tmpl", "refactor the code")},
 					{Command: "dotnet test"},
 				},
-				ExpectPhase: Refactor,
+				ExpectPhase: tdd.Refactor,
 			},
 			{
 				Input: "next",
 				Commands: []CommandExpected{
 					{Command: "dotnet test"},
 				},
-				ExpectPhase: Red,
+				ExpectPhase: tdd.Red,
 			},
 		},
 	}.Run(t)

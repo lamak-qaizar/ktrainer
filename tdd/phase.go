@@ -1,4 +1,4 @@
-package main
+package tdd
 
 import "testing"
 
@@ -65,11 +65,11 @@ func (m *TDDStateMachine) RefactorDone(testsPassed bool) {
 func (m *TDDStateMachine) Prompt(userInput string) string {
 	switch m.phase {
 	case Red:
-		return promptFrom("red.tmpl", userInput)
+		return PromptFrom("red.tmpl", userInput)
 	case Green:
-		return promptFrom("green.tmpl", userInput)
+		return PromptFrom("green.tmpl", userInput)
 	case Refactor:
-		return promptFrom("refactor.tmpl", userInput)
+		return PromptFrom("refactor.tmpl", userInput)
 	}
 	panic("Undefined phase :o")
 }

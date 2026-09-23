@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"kata-trainer/tdd"
 	"strings"
 	"testing"
 )
@@ -23,7 +24,7 @@ type CommandExpected struct {
 type Step struct {
 	Input       string
 	Commands    []CommandExpected
-	ExpectPhase Phase
+	ExpectPhase tdd.Phase
 }
 
 type Scenario struct {
@@ -50,8 +51,8 @@ func (scenario *Scenario) Commands() []CommandExpected {
 	return commands
 }
 
-func (scenario *Scenario) Phases() []Phase {
-	var phases []Phase
+func (scenario *Scenario) Phases() []tdd.Phase {
+	var phases []tdd.Phase
 	for _, step := range scenario.Steps {
 		phases = append(phases, step.ExpectPhase)
 	}
@@ -62,7 +63,7 @@ func (scenario Scenario) Run(t *testing.T) {
 	input := strings.NewReader(scenario.NewlineSeperatedInputs() + "exit\n")
 	ui := NewTestUI(input)
 	commandRunner := NewTestCommandRunner(t, scenario.Commands())
-	tdd := NewTestTDDStateMachine(t, scenario.Phases())
+	tdd := tdd.NewTestTDDStateMachine(t, scenario.Phases())
 
 	runApp(ui,
 		NewClaudeCLIAssistant(NewClaudeAuth(""), commandRunner),

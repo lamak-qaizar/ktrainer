@@ -2,14 +2,15 @@ package main
 
 import (
 	"fmt"
+	"kata-trainer/tdd"
 	"time"
 )
 
 const KATA_DIR string = "mars-rover/MarsRover"
 
-func runApp(ui UserInterface, assistant Assistant, testRunner TestRunner, tdd TDD) {
+func runApp(ui UserInterface, assistant Assistant, testRunner TestRunner, tddStateMachine tdd.TDD) {
 	for {
-		ui.Writeln(fmt.Sprintf("\n %s: Type an instruction for Claude", tdd.Phase()))
+		ui.Writeln(fmt.Sprintf("\n %s: Type an instruction for Claude", tddStateMachine.Phase()))
 		ui.Write("> ")
 
 		input := ui.Read()
@@ -19,13 +20,13 @@ func runApp(ui UserInterface, assistant Assistant, testRunner TestRunner, tdd TD
 			break
 		}
 
-		if input == "next" && tdd.Phase() == Refactor {
+		if input == "next" && tddStateMachine.Phase() == tdd.Refactor {
 			testsPassed := testRunner.Run(KATA_DIR)
-			tdd.RefactorDone(testsPassed)
+			tddStateMachine.RefactorDone(testsPassed)
 			continue
 		}
 
-		output, err := assistant.ProposeChange(tdd.Prompt(input), KATA_DIR)
+		output, err := assistant.ProposeChange(tddStateMachine.Prompt(input), KATA_DIR)
 		if err != nil {
 			ui.Writeln("Error calling Claude:" + output)
 			continue
@@ -36,7 +37,7 @@ func runApp(ui UserInterface, assistant Assistant, testRunner TestRunner, tdd TD
 		testsPassed := testRunner.Run(KATA_DIR)
 		ui.Writeln(fmt.Sprintf("Tests passed: %t", testsPassed))
 
-		tdd.Advance(testsPassed)
+		tddStateMachine.Advance(testsPassed)
 	}
 }
 
@@ -59,5 +60,5 @@ func main() {
 	testRunner := NewDotnetTestRunner(ui.Writer(), commandRunner)
 	auth := SetupClaudeAuth(ui)
 	assistant := NewClaudeCLIAssistant(auth, commandRunner)
-	runApp(ui, assistant, testRunner, NewTDDStateMachine())
+	runApp(ui, assistant, testRunner, tdd.NewTDDStateMachine())
 }

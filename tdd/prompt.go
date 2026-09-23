@@ -1,4 +1,4 @@
-package main
+package tdd
 
 import (
 	"bytes"
@@ -9,7 +9,7 @@ import (
 //go:embed prompts/*.tmpl
 var promptFiles embed.FS
 
-func promptFrom(templatePath string, instructions string) string {
+func PromptFrom(templatePath string, instructions string) string {
 	tmpl, _ := template.ParseFS(promptFiles, "prompts/"+templatePath)
 	var prompt bytes.Buffer
 	tmpl.Execute(&prompt, struct{ Instructions string }{Instructions: instructions})
