@@ -77,6 +77,6 @@ func main() {
 	auth := SetupClaudeAuth(userInterface)
 	assistant := NewClaudeCLIAssistant(auth, commandRunner)
 
-	userInterface.Writeln("ktrainer", ui.Style{Title: true})
+	userInterface.Writeln("ktrainer", ui.Style{Title: true, Color: ui.YELLOW})
 	runApp(userInterface, assistant, testRunner, &tdd.RedState{})
 }

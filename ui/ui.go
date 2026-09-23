@@ -15,6 +15,7 @@ import (
 
 type Style struct {
 	Title bool
+	Color Color
 }
 
 type UserInterface interface {
@@ -42,7 +43,7 @@ func (ui *UI) Write(str string, style Style) {
 func (ui *UI) Writeln(str string, style Style) {
 	if style.Title {
 		pterm.DefaultBigText.WithLetters(
-			putils.LettersFromStringWithRGB(str, pterm.NewRGB(255, 215, 0)),
+			putils.LettersFromStringWithStyle(str, style.PtermColor().ToStyle()),
 		).Render()
 		return
 	}
