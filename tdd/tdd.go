@@ -29,51 +29,6 @@ type TDD interface {
 	ForceAdvance() TDD
 }
 
-type TDDStateMachine struct {
-	phase Phase
-}
-
-func NewTDDStateMachine() TDD {
-	return &RedState{}
-}
-
-func (m *TDDStateMachine) Phase() Phase {
-	return m.phase
-}
-
-func (m *TDDStateMachine) Advance(testsPassed bool) {
-	switch m.phase {
-	case Red:
-		if !testsPassed {
-			m.phase = Green
-		}
-	case Green:
-		if testsPassed {
-			m.phase = Refactor
-		}
-	case Refactor:
-		m.phase = Refactor
-	}
-}
-
-func (m *TDDStateMachine) RefactorDone(testsPassed bool) {
-	if m.phase == Refactor && testsPassed {
-		m.phase = Red
-	}
-}
-
-func (m *TDDStateMachine) Prompt(userInput string) string {
-	switch m.phase {
-	case Red:
-		return PromptFrom("red.tmpl", userInput)
-	case Green:
-		return PromptFrom("green.tmpl", userInput)
-	case Refactor:
-		return PromptFrom("refactor.tmpl", userInput)
-	}
-	panic("Undefined phase :o")
-}
-
 type TestTDDStateMachine struct {
 	TDD
 	t              *testing.T
@@ -83,7 +38,7 @@ type TestTDDStateMachine struct {
 
 func NewTestTDDStateMachine(t *testing.T, expected []Phase) *TestTDDStateMachine {
 	return &TestTDDStateMachine{
-		TDD:            NewTDDStateMachine(),
+		TDD:            &RedState{},
 		t:              t,
 		expectedPhases: expected,
 	}

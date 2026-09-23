@@ -59,5 +59,5 @@ func main() {
 	testRunner := NewDotnetTestRunner(ui.Writer(), commandRunner)
 	auth := SetupClaudeAuth(ui)
 	assistant := NewClaudeCLIAssistant(auth, commandRunner)
-	runApp(ui, assistant, testRunner, tdd.NewTDDStateMachine())
+	runApp(ui, assistant, testRunner, &tdd.RedState{})
 }
