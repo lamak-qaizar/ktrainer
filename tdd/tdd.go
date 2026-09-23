@@ -24,17 +24,17 @@ func (p Phase) String() string {
 
 type TDD interface {
 	Phase() Phase
-	Advance(testsPassed bool)
+	Advance(testsPassed bool) TDD
 	Prompt(userInput string) string
-	RefactorDone(testsPassed bool)
+	ForceAdvance() TDD
 }
 
 type TDDStateMachine struct {
 	phase Phase
 }
 
-func NewTDDStateMachine() *TDDStateMachine {
-	return &TDDStateMachine{phase: Red}
+func NewTDDStateMachine() TDD {
+	return &RedState{}
 }
 
 func (m *TDDStateMachine) Phase() Phase {
@@ -75,7 +75,7 @@ func (m *TDDStateMachine) Prompt(userInput string) string {
 }
 
 type TestTDDStateMachine struct {
-	*TDDStateMachine
+	TDD
 	t              *testing.T
 	expectedPhases []Phase
 	pos            int
@@ -83,18 +83,24 @@ type TestTDDStateMachine struct {
 
 func NewTestTDDStateMachine(t *testing.T, expected []Phase) *TestTDDStateMachine {
 	return &TestTDDStateMachine{
-		TDDStateMachine: NewTDDStateMachine(),
-		t:               t,
-		expectedPhases:  expected,
+		TDD:            NewTDDStateMachine(),
+		t:              t,
+		expectedPhases: expected,
 	}
 }
 
-func (tdd *TestTDDStateMachine) Advance(testsPassed bool) {
-	tdd.TDDStateMachine.Advance(testsPassed)
+func (tdd *TestTDDStateMachine) Advance(testsPassed bool) TDD {
+	nextState := tdd.TDD.Advance(testsPassed)
 
 	expected := tdd.expectedPhases[tdd.pos]
-	if tdd.Phase() != expected {
-		tdd.t.Fatalf("[Step %d] Expected TDD phase %s, got: %s", tdd.pos, expected, tdd.Phase())
+	if nextState.Phase() != expected {
+		tdd.t.Fatalf("[Step %d] Expected TDD phase %s, got: %s", tdd.pos, expected, nextState.Phase())
 	}
-	tdd.pos++
+
+	return &TestTDDStateMachine{
+		TDD:            nextState,
+		t:              tdd.t,
+		expectedPhases: tdd.expectedPhases,
+		pos:            tdd.pos + 1,
+	}
 }

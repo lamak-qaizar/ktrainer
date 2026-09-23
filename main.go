@@ -20,9 +20,8 @@ func runApp(ui UserInterface, assistant Assistant, testRunner TestRunner, tddSta
 			break
 		}
 
-		if input == "next" && tddStateMachine.Phase() == tdd.Refactor {
-			testsPassed := testRunner.Run(KATA_DIR)
-			tddStateMachine.RefactorDone(testsPassed)
+		if input == "next" {
+			tddStateMachine.ForceAdvance()
 			continue
 		}
 
@@ -37,7 +36,7 @@ func runApp(ui UserInterface, assistant Assistant, testRunner TestRunner, tddSta
 		testsPassed := testRunner.Run(KATA_DIR)
 		ui.Writeln(fmt.Sprintf("Tests passed: %t", testsPassed))
 
-		tddStateMachine.Advance(testsPassed)
+		tddStateMachine = tddStateMachine.Advance(testsPassed)
 	}
 }
 
