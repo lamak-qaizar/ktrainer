@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"kata-trainer/tdd"
+	"strings"
 	"time"
 )
 
@@ -30,6 +31,13 @@ func runApp(ui UserInterface, assistant Assistant, testRunner TestRunner, tddSta
 		runApp(ui, assistant, testRunner, tddStateMachine)
 		return
 	}
+
+	if reason, rejected := extractRejection(output); rejected {
+		ui.Write("A TDD rule was broken, no changes made. " + reason)
+		runApp(ui, assistant, testRunner, tddStateMachine)
+		return
+	}
+
 	ui.Writeln(output)
 
 	ui.Writeln("Running tests...")
@@ -37,6 +45,15 @@ func runApp(ui UserInterface, assistant Assistant, testRunner TestRunner, tddSta
 	ui.Writeln(fmt.Sprintf("Tests passed: %t", testsPassed))
 
 	runApp(ui, assistant, testRunner, tddStateMachine.Advance(testsPassed))
+}
+
+func extractRejection(output string) (reason string, rejected bool) {
+	for _, line := range strings.Split(output, "\n") {
+		if strings.HasPrefix(line, "REJECTED:") {
+			return strings.TrimSpace(strings.TrimPrefix(line, "REJECTED:")), true
+		}
+	}
+	return "", false
 }
 
 func SetupClaudeAuth(ui UserInterface) *ClaudeAuth {

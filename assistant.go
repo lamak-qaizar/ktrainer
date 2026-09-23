@@ -21,7 +21,8 @@ func NewClaudeCLIAssistant(auth *ClaudeAuth, runner Runner) *ClaudeCLIAssistant 
 
 func (assistant ClaudeCLIAssistant) invalidatePersistedTokenIfSessionHasExpired(output string, err error) {
 	if err != nil {
-		if strings.Contains(string(output), "OAuth session expired") {
+		if strings.Contains(string(output), "OAuth session expired") ||
+			strings.Contains(string(output), "Your organization has disabled Claude subscription") {
 			assistant.auth.Invalidate()
 		}
 	}

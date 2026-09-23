@@ -46,6 +46,20 @@ func TestRunApp_StayOnRedWhenTestPasses(t *testing.T) {
 	}.Run(t)
 }
 
+func TestRunApp_StayOnRedWhenClaudeRejectsPrompt(t *testing.T) {
+	Scenario{
+		Steps: []Step{
+			{
+				Input: "write all tests",
+				Commands: []CommandExpected{
+					{Command: claudeCmd("red.tmpl", "write all tests"), Mock: MockResponse{Output: "REJECTED: write one test only"}},
+				},
+				ExpectPhase: tdd.Red,
+			},
+		},
+	}.Run(t)
+}
+
 func TestRunApp_RefactorAfterTestsPassOnGreen(t *testing.T) {
 	Scenario{
 		Steps: []Step{
