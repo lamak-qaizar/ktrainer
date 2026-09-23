@@ -49,6 +49,10 @@ func NewTestCommandRunner(t *testing.T, expected []CommandExpected) *TestCommand
 func (runner *TestCommandRunner) Run(name string, args []string, dir string, env []string, output io.Writer) (string, error) {
 	command := strings.Join(append([]string{name}, args...), " ")
 
+	if runner.pos >= len(runner.expected) {
+		runner.t.Fatalf("Out of commands")
+	}
+
 	exp := runner.expected[runner.pos]
 	if command != exp.Command {
 		runner.t.Fatalf("Expected command:\n%q\nGot:\n%q", exp.Command, command)

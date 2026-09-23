@@ -97,10 +97,7 @@ func TestRunApp_RefactorStaysOnRefactorUnlessUserExplicitySelectsNext(t *testing
 				ExpectPhase: tdd.Refactor,
 			},
 			{
-				Input: "next",
-				Commands: []CommandExpected{
-					{Command: "dotnet test"},
-				},
+				Input:       "next",
 				ExpectPhase: tdd.Red,
 			},
 		},

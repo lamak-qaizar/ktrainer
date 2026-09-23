@@ -9,35 +9,34 @@ import (
 const KATA_DIR string = "mars-rover/MarsRover"
 
 func runApp(ui UserInterface, assistant Assistant, testRunner TestRunner, tddStateMachine tdd.TDD) {
-	for {
-		ui.Writeln(fmt.Sprintf("\n %s: Type an instruction for Claude", tddStateMachine.Phase()))
-		ui.Write("> ")
+	ui.Writeln(fmt.Sprintf("\n %s: Type an instruction for Claude", tddStateMachine.Phase()))
+	ui.Write("> ")
 
-		input := ui.Read()
+	input := ui.Read()
 
-		if input == "exit" {
-			ui.Writeln("Exiting kata trainer.")
-			break
-		}
-
-		if input == "next" {
-			tddStateMachine.ForceAdvance()
-			continue
-		}
-
-		output, err := assistant.ProposeChange(tddStateMachine.Prompt(input), KATA_DIR)
-		if err != nil {
-			ui.Writeln("Error calling Claude:" + output)
-			continue
-		}
-		ui.Writeln(output)
-
-		ui.Writeln("Running tests...")
-		testsPassed := testRunner.Run(KATA_DIR)
-		ui.Writeln(fmt.Sprintf("Tests passed: %t", testsPassed))
-
-		tddStateMachine = tddStateMachine.Advance(testsPassed)
+	if input == "exit" {
+		ui.Writeln("Exiting kata trainer.")
+		return
 	}
+
+	if input == "next" {
+		runApp(ui, assistant, testRunner, tddStateMachine.ForceAdvance())
+		return
+	}
+
+	output, err := assistant.ProposeChange(tddStateMachine.Prompt(input), KATA_DIR)
+	if err != nil {
+		ui.Writeln("Error calling Claude:" + output)
+		runApp(ui, assistant, testRunner, tddStateMachine)
+		return
+	}
+	ui.Writeln(output)
+
+	ui.Writeln("Running tests...")
+	testsPassed := testRunner.Run(KATA_DIR)
+	ui.Writeln(fmt.Sprintf("Tests passed: %t", testsPassed))
+
+	runApp(ui, assistant, testRunner, tddStateMachine.Advance(testsPassed))
 }
 
 func SetupClaudeAuth(ui UserInterface) *ClaudeAuth {
