@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"kata-trainer/tdd"
+	"kata-trainer/ui"
 	"strings"
 	"testing"
 )
@@ -61,12 +62,12 @@ func (scenario *Scenario) Phases() []tdd.Phase {
 
 func (scenario Scenario) Run(t *testing.T) {
 	input := strings.NewReader(scenario.NewlineSeperatedInputs() + "exit\n")
-	ui := NewTestUI(input)
+	userInterface := ui.NewTestUI(input)
 	commandRunner := NewTestCommandRunner(t, scenario.Commands())
 	tdd := tdd.NewTestTDDStateMachine(t, scenario.Phases())
 
-	runApp(ui,
+	runApp(userInterface,
 		NewClaudeCLIAssistant(NewClaudeAuth(""), commandRunner),
-		NewDotnetTestRunner(ui.Writer(), commandRunner),
+		NewDotnetTestRunner(userInterface.Writer(), commandRunner),
 		tdd)
 }

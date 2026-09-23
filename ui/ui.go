@@ -1,4 +1,4 @@
-package main
+package ui
 
 import (
 	"bufio"
@@ -14,7 +14,7 @@ import (
 )
 
 type Style struct {
-	title bool
+	Title bool
 }
 
 type UserInterface interface {
@@ -40,7 +40,7 @@ func (ui *UI) Write(str string, style Style) {
 }
 
 func (ui *UI) Writeln(str string, style Style) {
-	if style.title {
+	if style.Title {
 		pterm.DefaultBigText.WithLetters(
 			putils.LettersFromStringWithRGB(str, pterm.NewRGB(255, 215, 0)),
 		).Render()
