@@ -8,11 +8,18 @@ import (
 	"os"
 	"strings"
 	"testing"
+
+	"github.com/pterm/pterm"
+	"github.com/pterm/pterm/putils"
 )
 
+type Style struct {
+	title bool
+}
+
 type UserInterface interface {
-	Write(format string)
-	Writeln(format string)
+	Write(str string, style Style)
+	Writeln(str string, style Style)
 	Read() string
 }
 
@@ -28,11 +35,17 @@ func NewUI() *UI {
 	}
 }
 
-func (ui *UI) Write(str string) {
+func (ui *UI) Write(str string, style Style) {
 	fmt.Fprintf(ui.output, "%s", str)
 }
 
-func (ui *UI) Writeln(str string) {
+func (ui *UI) Writeln(str string, style Style) {
+	if style.title {
+		pterm.DefaultBigText.WithLetters(
+			putils.LettersFromStringWithRGB(str, pterm.NewRGB(255, 215, 0)),
+		).Render()
+		return
+	}
 	fmt.Fprintf(ui.output, "%s", str+"\n")
 }
 
