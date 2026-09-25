@@ -47,6 +47,7 @@ func (ui *UI) Writeln(str string, style Style) {
 		).Render()
 		return
 	}
+
 	fmt.Fprintf(ui.output, "%s", str+"\n")
 }
 

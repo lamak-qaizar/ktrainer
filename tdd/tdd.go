@@ -1,6 +1,9 @@
 package tdd
 
-import "testing"
+import (
+	"kata-trainer/ui"
+	"testing"
+)
 
 type Phase int
 
@@ -27,6 +30,7 @@ type TDD interface {
 	Advance(testsPassed bool) TDD
 	Prompt(userInput string) string
 	ForceAdvance() TDD
+	PrintInstructions(userInterface ui.UserInterface)
 }
 
 type TestTDDStateMachine struct {

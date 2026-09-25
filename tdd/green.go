@@ -1,5 +1,9 @@
 package tdd
 
+import (
+	"kata-trainer/ui"
+)
+
 type GreenState struct {
 }
 
@@ -21,4 +25,9 @@ func (green *GreenState) Prompt(userInput string) string {
 
 func (green *GreenState) ForceAdvance() TDD {
 	return &RefactorState{}
+}
+
+func (red *GreenState) PrintInstructions(userInterface ui.UserInterface) {
+	userInterface.Writeln("\nGREEN: Type an instruction for Claude", ui.Style{})
+	userInterface.Write("> ", ui.Style{})
 }

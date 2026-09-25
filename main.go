@@ -11,8 +11,7 @@ import (
 const KATA_DIR string = "mars-rover/MarsRover"
 
 func runApp(userInterface ui.UserInterface, assistant Assistant, testRunner TestRunner, tddStateMachine tdd.TDD) {
-	userInterface.Writeln(fmt.Sprintf("\n %s: Type an instruction for Claude", tddStateMachine.Phase()), ui.Style{})
-	userInterface.Write("> ", ui.Style{})
+	tddStateMachine.PrintInstructions(userInterface)
 
 	input := userInterface.Read()
 
