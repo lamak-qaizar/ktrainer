@@ -37,18 +37,17 @@ func NewUI() *UI {
 }
 
 func (ui *UI) Write(str string, style Style) {
-	fmt.Fprintf(ui.output, "%s", str)
-}
-
-func (ui *UI) Writeln(str string, style Style) {
 	if style.Title {
 		pterm.DefaultBigText.WithLetters(
 			putils.LettersFromStringWithStyle(str, style.PtermColor().ToStyle()),
 		).Render()
 		return
 	}
+	fmt.Fprintf(ui.output, "%s", str)
+}
 
-	fmt.Fprintf(ui.output, "%s", str+"\n")
+func (ui *UI) Writeln(str string, style Style) {
+	ui.Write(str+"\n", style)
 }
 
 func (ui *UI) Read() string {
