@@ -64,7 +64,7 @@ func (scenario Scenario) Run(t *testing.T) {
 	input := strings.NewReader(scenario.NewlineSeperatedInputs() + "exit\n")
 	userInterface := ui.NewTestUI(input)
 	commandRunner := NewTestCommandRunner(t, scenario.Commands())
-	tdd := tdd.NewTestTDDStateMachine(t, scenario.Phases())
+	tdd := tdd.NewTestTDDPhase(t, scenario.Phases())
 
 	runApp(userInterface,
 		NewClaudeCLIAssistant(NewClaudeAuth(""), commandRunner),

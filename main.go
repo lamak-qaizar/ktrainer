@@ -10,8 +10,8 @@ import (
 
 const KATA_DIR string = "mars-rover/MarsRover"
 
-func runApp(userInterface ui.UserInterface, assistant Assistant, testRunner TestRunner, tddStateMachine tdd.TDD) {
-	tddStateMachine.PrintInstructions(userInterface)
+func runApp(userInterface ui.UserInterface, assistant Assistant, testRunner TestRunner, tddPhase tdd.TDDPhase) {
+	tddPhase.PrintInstructions(userInterface)
 
 	input := userInterface.Read()
 
@@ -21,20 +21,20 @@ func runApp(userInterface ui.UserInterface, assistant Assistant, testRunner Test
 	}
 
 	if input == "next" {
-		runApp(userInterface, assistant, testRunner, tddStateMachine.ForceAdvance())
+		runApp(userInterface, assistant, testRunner, tddPhase.ForceAdvance())
 		return
 	}
 
-	output, err := assistant.ProposeChange(tddStateMachine.Prompt(input), KATA_DIR)
+	output, err := assistant.ProposeChange(tddPhase.Prompt(input), KATA_DIR)
 	if err != nil {
 		userInterface.Writeln("Error calling Claude:"+output, ui.Style{})
-		runApp(userInterface, assistant, testRunner, tddStateMachine)
+		runApp(userInterface, assistant, testRunner, tddPhase)
 		return
 	}
 
 	if reason, rejected := extractRejection(output); rejected {
 		userInterface.Write("A TDD rule was broken, no changes made. "+reason, ui.Style{})
-		runApp(userInterface, assistant, testRunner, tddStateMachine)
+		runApp(userInterface, assistant, testRunner, tddPhase)
 		return
 	}
 
@@ -44,7 +44,7 @@ func runApp(userInterface ui.UserInterface, assistant Assistant, testRunner Test
 	testsPassed := testRunner.Run(KATA_DIR)
 	userInterface.Writeln(fmt.Sprintf("Tests passed: %t", testsPassed), ui.Style{})
 
-	runApp(userInterface, assistant, testRunner, tddStateMachine.Advance(testsPassed))
+	runApp(userInterface, assistant, testRunner, tddPhase.Advance(testsPassed))
 }
 
 func extractRejection(output string) (reason string, rejected bool) {

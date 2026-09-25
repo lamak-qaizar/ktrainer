@@ -11,7 +11,7 @@ func (green *GreenState) Phase() Phase {
 	return Green
 }
 
-func (green *GreenState) Advance(testsPassed bool) TDD {
+func (green *GreenState) Advance(testsPassed bool) TDDPhase {
 	if !testsPassed {
 		return green
 	}
@@ -23,7 +23,7 @@ func (green *GreenState) Prompt(userInput string) string {
 	return PromptFrom("green.tmpl", userInput)
 }
 
-func (green *GreenState) ForceAdvance() TDD {
+func (green *GreenState) ForceAdvance() TDDPhase {
 	return &RefactorState{}
 }
 

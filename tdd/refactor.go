@@ -11,7 +11,7 @@ func (refactor *RefactorState) Phase() Phase {
 	return Refactor
 }
 
-func (refactor *RefactorState) Advance(testsPassed bool) TDD {
+func (refactor *RefactorState) Advance(testsPassed bool) TDDPhase {
 	return refactor
 }
 
@@ -19,7 +19,7 @@ func (refactor *RefactorState) Prompt(userInput string) string {
 	return PromptFrom("refactor.tmpl", userInput)
 }
 
-func (refacor *RefactorState) ForceAdvance() TDD {
+func (refacor *RefactorState) ForceAdvance() TDDPhase {
 	return &RedState{}
 }
 
