@@ -3,7 +3,6 @@ package ui
 import (
 	"bufio"
 	"bytes"
-	"fmt"
 	"io"
 	"os"
 	"strings"
@@ -43,7 +42,8 @@ func (ui *UI) Write(str string, style Style) {
 		).Render()
 		return
 	}
-	fmt.Fprintf(ui.output, "%s", str)
+
+	style.PtermColor().Print(str)
 }
 
 func (ui *UI) Writeln(str string, style Style) {
