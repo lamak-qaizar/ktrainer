@@ -31,7 +31,7 @@ func (assistant ClaudeCLIAssistant) invalidatePersistedTokenIfSessionHasExpired(
 func (assitant ClaudeCLIAssistant) ProposeChange(instructions string, kataDir string) (string, error) {
 	env := append(os.Environ(), "CLAUDE_CODE_OAUTH_TOKEN="+assitant.auth.token)
 	output, err := assitant.runner.Run("claude",
-		[]string{"-p", instructions, "--allowedTools", "Edit", "--safe-mode", "--model", "haiku"},
+		[]string{"-p", instructions, "--allowedTools", "Edit,Create", "--safe-mode", "--model", "haiku", "--permission-mode", "acceptEdits"},
 		kataDir, env, io.Discard)
 
 	assitant.invalidatePersistedTokenIfSessionHasExpired(string(output), err)
