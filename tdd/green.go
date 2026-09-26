@@ -28,6 +28,6 @@ func (green *GreenState) ForceAdvance() TDDPhase {
 }
 
 func (red *GreenState) PrintInstructions(userInterface ui.UserInterface) {
-	userInterface.Writeln("\nGREEN: Type an instruction for Claude", ui.Style{})
-	userInterface.Write("> ", ui.Style{})
+	userInterface.Writeln("How would you like to pass the test? Provide the simplest solution possible.", ui.Style{Display: ui.BOX})
+	userInterface.Write("\nGREEN > ", ui.Style{Color: ui.GREEN})
 }

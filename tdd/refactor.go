@@ -24,6 +24,6 @@ func (refacor *RefactorState) ForceAdvance() TDDPhase {
 }
 
 func (red *RefactorState) PrintInstructions(userInterface ui.UserInterface) {
-	userInterface.Writeln("\nREFACTOR: Type an instruction for Claude", ui.Style{})
-	userInterface.Write("> ", ui.Style{})
+	userInterface.Writeln("Specify any design improvements.", ui.Style{Display: ui.BOX})
+	userInterface.Write("\nREFACTOR > ", ui.Style{Color: ui.YELLOW})
 }
