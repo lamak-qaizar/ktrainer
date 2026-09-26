@@ -8,7 +8,7 @@ import (
 
 func claudeCmd(template string, userPrompt string) string {
 	prompt := tdd.PromptFrom(template, userPrompt)
-	return fmt.Sprintf("claude -p %s --allowedTools Edit --safe-mode --bare", prompt)
+	return fmt.Sprintf("claude -p %s --allowedTools Edit --safe-mode --model haiku", prompt)
 }
 
 func TestRunApp_QuitExitsCleanly(t *testing.T) {
