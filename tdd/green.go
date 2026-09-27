@@ -27,7 +27,7 @@ func (green *GreenState) ForceAdvance() TDDPhase {
 	return &RefactorState{}
 }
 
-func (red *GreenState) PrintInstructions(userInterface ui.UserInterface) {
-	userInterface.Writeln("How would you like to pass the test? Provide the simplest solution possible.", ui.Style{Display: ui.BOX})
-	userInterface.Write("\nGREEN > ", ui.Style{Color: ui.GREEN})
+func (green *GreenState) PrintInstructions(userInterface ui.UserInterface) {
+	instructions(userInterface, green.Phase().String(), ui.GREEN,
+		"How would you like to pass the test? Provide the simplest solution possible.")
 }
