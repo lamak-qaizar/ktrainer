@@ -37,7 +37,7 @@ func NewUI() *UI {
 }
 
 func (ui *UI) Write(str string, style Style) {
-	style.PtermColor().Print(str)
+	style.Color.toPterm().Print(str)
 }
 
 func (ui *UI) SenseiSays(str string) {
