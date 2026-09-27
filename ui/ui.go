@@ -20,6 +20,7 @@ type Style struct {
 type UserInterface interface {
 	Write(str string, style Style)
 	Writeln(str string, style Style)
+	SenseiSays(str string)
 	Read() string
 }
 
@@ -50,6 +51,12 @@ func (ui *UI) Write(str string, style Style) {
 	}
 
 	style.PtermColor().Print(str)
+}
+
+func (ui *UI) SenseiSays(str string) {
+	pterm.Println()
+	pterm.DefaultBox.WithTitleTopCenter().WithTitle("sensei says").Print(str)
+	pterm.Println()
 }
 
 func (ui *UI) Writeln(str string, style Style) {

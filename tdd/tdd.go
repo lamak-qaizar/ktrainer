@@ -65,6 +65,6 @@ func (tdd *TestTDDPhase) Advance(testsPassed bool) TDDPhase {
 }
 
 func instructions(userInterface ui.UserInterface, phase string, color ui.Color, senseiSays string) {
-	userInterface.Writeln(senseiSays, ui.Style{Display: ui.BOX})
+	userInterface.SenseiSays(senseiSays)
 	userInterface.Write("\n"+phase+" > ", ui.Style{Color: color})
 }
