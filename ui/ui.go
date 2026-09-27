@@ -13,8 +13,7 @@ import (
 )
 
 type Style struct {
-	Display Display
-	Color   Color
+	Color Color
 }
 
 type UserInterface interface {
@@ -38,19 +37,6 @@ func NewUI() *UI {
 }
 
 func (ui *UI) Write(str string, style Style) {
-	if style.Display == TITLE {
-		pterm.DefaultBigText.WithLetters(
-			putils.LettersFromStringWithStyle(str, style.PtermColor().ToStyle()),
-		).Render()
-		return
-	}
-
-	if style.Display == BOX {
-		pterm.Println()
-		pterm.DefaultBox.WithTitleTopCenter().WithTitle("sensei says").WithTextStyle(style.PtermColor().ToStyle()).Print(str)
-		return
-	}
-
 	style.PtermColor().Print(str)
 }
 
