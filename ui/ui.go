@@ -45,7 +45,7 @@ func (ui *UI) Write(str string, style Style) {
 
 	if style.Display == BOX {
 		pterm.Println()
-		pterm.DefaultBox.WithTextStyle(style.PtermColor().ToStyle()).Print(str)
+		pterm.DefaultBox.WithTitleTopCenter().WithTitle("sensei says").WithTextStyle(style.PtermColor().ToStyle()).Print(str)
 		return
 	}
 
