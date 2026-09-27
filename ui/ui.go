@@ -21,6 +21,7 @@ type UserInterface interface {
 	Write(str string, style Style)
 	Writeln(str string, style Style)
 	SenseiSays(str string)
+	Title(str string)
 	Read() string
 }
 
@@ -57,6 +58,12 @@ func (ui *UI) SenseiSays(str string) {
 	pterm.Println()
 	pterm.DefaultBox.WithTitleTopCenter().WithTitle("sensei says").Print(str)
 	pterm.Println()
+}
+
+func (ui *UI) Title(str string) {
+	pterm.DefaultBigText.WithLetters(
+		putils.LettersFromStringWithStyle(str, YELLOW.toPterm().ToStyle()),
+	).Render()
 }
 
 func (ui *UI) Writeln(str string, style Style) {

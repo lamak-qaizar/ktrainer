@@ -21,3 +21,7 @@ var colors = map[Color]pterm.Color{
 func (s Style) PtermColor() pterm.Color {
 	return colors[s.Color]
 }
+
+func (c Color) toPterm() pterm.Color {
+	return colors[c]
+}
