@@ -36,10 +36,6 @@ func NewUI() *UI {
 	}
 }
 
-func (ui *UI) Write(str string, style Style) {
-	style.Color.toPterm().Print(str)
-}
-
 func (ui *UI) SenseiSays(str string) {
 	pterm.Println()
 	pterm.DefaultBox.WithTitleTopCenter().WithTitle("sensei says").Print(str)
@@ -50,6 +46,10 @@ func (ui *UI) Title(str string) {
 	pterm.DefaultBigText.WithLetters(
 		putils.LettersFromStringWithStyle(str, YELLOW.toPterm().ToStyle()),
 	).Render()
+}
+
+func (ui *UI) Write(str string, style Style) {
+	style.Color.toPterm().Print(str)
 }
 
 func (ui *UI) Writeln(str string, style Style) {
