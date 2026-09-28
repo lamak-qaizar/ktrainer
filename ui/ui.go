@@ -38,7 +38,7 @@ func NewUI() *UI {
 
 func (ui *UI) SenseiSays(str string) {
 	pterm.Println()
-	pterm.DefaultBox.WithTitleTopCenter().WithTitle("sensei says").Print(str)
+	pterm.DefaultBox.WithHorizontalPadding(2).WithVerticalPadding(1).WithTitleTopCenter().WithTitle(pterm.Cyan(" sensei says ")).Print(str)
 	pterm.Println()
 }
 
