@@ -2,6 +2,7 @@ package tdd
 
 import (
 	"kata-trainer/ui"
+	"strings"
 	"testing"
 )
 
@@ -66,5 +67,5 @@ func (tdd *TestTDDPhase) Advance(testsPassed bool) TDDPhase {
 
 func instructions(userInterface ui.UserInterface, phase string, color ui.Color, senseiSays string) {
 	userInterface.SenseiSays(senseiSays)
-	userInterface.Write("\n"+phase+" > ", ui.Style{Color: color})
+	userInterface.Write("\n"+strings.ToUpper(phase)+" > ", ui.Style{Color: color})
 }
