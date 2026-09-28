@@ -25,19 +25,23 @@ func runApp(userInterface ui.UserInterface, assistant Assistant, testRunner Test
 		return
 	}
 
+	spinner := ui.NewSpinner("Clauding...")
 	output, err := assistant.ProposeChange(tddPhase.Prompt(input), KATA_DIR)
 	if err != nil {
+		spinner.Fail()
 		userInterface.Writeln("Error calling Claude:"+output, ui.Style{})
 		runApp(userInterface, assistant, testRunner, tddPhase)
 		return
 	}
 
 	if reason, rejected := extractRejection(output); rejected {
+		spinner.Fail()
 		userInterface.Write("A TDD rule was broken, no changes made. "+reason, ui.Style{})
 		runApp(userInterface, assistant, testRunner, tddPhase)
 		return
 	}
 
+	spinner.Success()
 	userInterface.Writeln(output, ui.Style{})
 
 	userInterface.Writeln("Running tests...", ui.Style{})
