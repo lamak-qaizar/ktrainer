@@ -1,9 +1,9 @@
 {
   "version": "1.0.0",
   "description": "ktrainer",
-  "homepage": "https://github.com/<you>/<repo>",
+  "homepage": "https://github.com/lamak-qaizar/ktrainer",
   "license": "MIT",
-  "url": "https://github.com/<you>/<repo>/releases/download/v1.0.0/myapp.exe",
+  "url": "https://github.com/lamak-qaizar/ktrainer/releases/download/v1.0.0/ktrainer.exe",
   "hash": "BB1BAA79EEF987B6A50ED5AB9F259DA30329EF99951EE620EBBC85A20CFD1FFC",
   "bin": "build/ktrainer.exe"
 }
