@@ -1,64 +1,12 @@
 package main
 
 import (
-	"fmt"
 	"kata-trainer/tdd"
 	"kata-trainer/ui"
-	"strings"
 	"time"
 )
 
 const KATA_DIR string = "mars-rover/MarsRover"
-
-func runApp(userInterface ui.UserInterface, assistant Assistant, testRunner TestRunner, tddPhase tdd.TDDPhase) {
-	tddPhase.PrintInstructions(userInterface)
-
-	input := userInterface.Read()
-
-	if input == "exit" {
-		userInterface.Writeln("Exiting kata trainer.", ui.Style{})
-		return
-	}
-
-	if input == "next" {
-		runApp(userInterface, assistant, testRunner, tddPhase.ForceAdvance())
-		return
-	}
-
-	spinner := ui.NewSpinner("Clauding...")
-	output, err := assistant.ProposeChange(tddPhase.Prompt(input), KATA_DIR)
-	if err != nil {
-		spinner.Fail()
-		userInterface.Writeln("Error calling Claude:"+output, ui.Style{})
-		runApp(userInterface, assistant, testRunner, tddPhase)
-		return
-	}
-
-	if reason, rejected := extractRejection(output); rejected {
-		spinner.Fail()
-		userInterface.Write("A TDD rule was broken, no changes made. "+reason, ui.Style{})
-		runApp(userInterface, assistant, testRunner, tddPhase)
-		return
-	}
-
-	spinner.Success()
-	userInterface.Writeln(output, ui.Style{})
-
-	userInterface.Writeln("Running tests...", ui.Style{})
-	testsPassed := testRunner.Run(KATA_DIR)
-	userInterface.Writeln(fmt.Sprintf("Tests passed: %t", testsPassed), ui.Style{})
-
-	runApp(userInterface, assistant, testRunner, tddPhase.Advance(testsPassed))
-}
-
-func extractRejection(output string) (reason string, rejected bool) {
-	for _, line := range strings.Split(output, "\n") {
-		if strings.HasPrefix(line, "REJECTED:") {
-			return strings.TrimSpace(strings.TrimPrefix(line, "REJECTED:")), true
-		}
-	}
-	return "", false
-}
 
 func SetupClaudeAuth(userInterface ui.UserInterface) *ClaudeAuth {
 	token := LoadTokenFromConfig()
@@ -81,5 +29,5 @@ func main() {
 	assistant := NewClaudeCLIAssistant(auth, commandRunner)
 
 	userInterface.Title("ktrainer")
-	runApp(userInterface, assistant, testRunner, &tdd.RedState{})
+	NewAppRunner(userInterface, assistant, testRunner).Run(&tdd.RedState{})
 }
