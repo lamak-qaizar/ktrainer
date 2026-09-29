@@ -11,10 +11,11 @@ type AppRunner struct {
 	userInterface ui.UserInterface
 	assistant     Assistant
 	testRunner    TestRunner
+	kataDir       string
 }
 
-func NewAppRunner(userInterface ui.UserInterface, assistant Assistant, testRunner TestRunner) *AppRunner {
-	return &AppRunner{userInterface: userInterface, assistant: assistant, testRunner: testRunner}
+func NewAppRunner(kataDir string, userInterface ui.UserInterface, assistant Assistant, testRunner TestRunner) *AppRunner {
+	return &AppRunner{kataDir: kataDir, userInterface: userInterface, assistant: assistant, testRunner: testRunner}
 }
 
 func (appRunner *AppRunner) Run(tddPhase tdd.TDDPhase) {
