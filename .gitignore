@@ -1,2 +1,4 @@
-mars-rover/*
+MarsRover/*
 build/*
+
+!MarsRover/MarsRover.csproj
