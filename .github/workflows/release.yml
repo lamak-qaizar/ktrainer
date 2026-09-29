@@ -1,0 +1,46 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    if: contains(github.event.head_commit.message, '--release')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      
+      - name: Work out next version
+        id: version
+        run: |
+          LATEST=$(git describe --tags --abbrev=0)
+          IFS=. read -r MAJOR MINOR PATCH <<< "${LATEST#v}"
+          echo "version=$MAJOR.$MINOR.$((PATCH+1))" >> "$GITHUB_OUTPUT"
+      
+      - name: Build
+        run: GOOS=windows GOARCH=amd64 go build -ldflags "-s -w" -o build/ktrainer.exe .
+
+      - name: Create Scoop manifest
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+          HASH=$(sha256sum build/ktrainer.exe | cut -d' ' -f1)
+          sed -e "s/{{VERSION}}/$VERSION/g" -e "s/{{HASH}}/$HASH/g" \
+            scoop/ktrainer.template.json > build/ktrainer.json
+
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "v${{ steps.version.outputs.version }}" \
+            build/ktrainer.exe build/ktrainer.json \
+            --target "$GITHUB_SHA" --generate-notes
