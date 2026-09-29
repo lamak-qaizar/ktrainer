@@ -34,7 +34,7 @@ func (appRunner *AppRunner) Run(tddPhase tdd.TDDPhase) {
 	}
 
 	spinner := ui.NewSpinner("Clauding...")
-	output, err := appRunner.assistant.ProposeChange(tddPhase.Prompt(input), KATA_DIR)
+	output, err := appRunner.assistant.ProposeChange(tddPhase.Prompt(input), appRunner.kataDir)
 	if err != nil {
 		spinner.Fail()
 		appRunner.userInterface.Writeln("Error calling Claude:"+output, ui.Style{})
@@ -53,7 +53,7 @@ func (appRunner *AppRunner) Run(tddPhase tdd.TDDPhase) {
 	appRunner.userInterface.Writeln(output, ui.Style{})
 
 	appRunner.userInterface.Writeln("Running tests...", ui.Style{})
-	testsPassed := appRunner.testRunner.Run(KATA_DIR)
+	testsPassed := appRunner.testRunner.Run(appRunner.kataDir)
 	appRunner.userInterface.Writeln(fmt.Sprintf("Tests passed: %t", testsPassed), ui.Style{})
 
 	appRunner.Run(tddPhase.Advance(testsPassed))

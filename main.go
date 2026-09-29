@@ -6,8 +6,6 @@ import (
 	"time"
 )
 
-const KATA_DIR string = "MarsRover"
-
 func SetupClaudeAuth(userInterface ui.UserInterface) *ClaudeAuth {
 	token := LoadTokenFromConfig()
 	if token != "" {
@@ -29,5 +27,5 @@ func main() {
 	assistant := NewClaudeCLIAssistant(auth, commandRunner)
 
 	userInterface.Title("ktrainer")
-	NewAppRunner(KATA_DIR, userInterface, assistant, testRunner).Run(&tdd.RedState{})
+	NewAppRunner("MarsRover", userInterface, assistant, testRunner).Run(&tdd.RedState{})
 }
