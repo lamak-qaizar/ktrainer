@@ -27,5 +27,5 @@ func main() {
 	assistant := NewClaudeCLIAssistant(auth, commandRunner)
 
 	userInterface.Title("ktrainer")
-	NewAppRunner("MarsRover", userInterface, assistant, testRunner).Run(&tdd.RedState{})
+	RunApp("MarsRover", userInterface, assistant, testRunner, &tdd.RedState{})
 }

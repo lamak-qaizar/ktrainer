@@ -72,6 +72,8 @@ type TestUI struct {
 
 func NewTestUI(input io.Reader) *TestUI {
 	var buf bytes.Buffer
+	pterm.SetDefaultOutput(&buf)
+	pterm.DefaultSpinner.Writer = &buf
 	return &TestUI{
 		UI:     &UI{reader: bufio.NewReader(input), output: &buf},
 		output: &buf,

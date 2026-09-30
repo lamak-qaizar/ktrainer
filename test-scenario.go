@@ -66,7 +66,7 @@ func (scenario Scenario) Run(t *testing.T) {
 	commandRunner := NewTestCommandRunner(t, scenario.Commands())
 	tdd := tdd.NewTestTDDPhase(t, scenario.Phases())
 
-	NewAppRunner("", userInterface,
+	RunApp("", userInterface,
 		NewClaudeCLIAssistant(NewClaudeAuth(""), commandRunner),
-		NewDotnetTestRunner(userInterface.Writer(), commandRunner)).Run(tdd)
+		NewDotnetTestRunner(userInterface.Writer(), commandRunner), tdd)
 }
