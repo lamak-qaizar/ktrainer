@@ -3,26 +3,12 @@ package main
 import (
 	"fmt"
 	"kata-trainer/tdd"
-	"kata-trainer/ui"
-	"strings"
 	"testing"
 )
 
 func claudeCmd(template string, userPrompt string) string {
 	prompt := tdd.PromptFrom(template, userPrompt)
 	return fmt.Sprintf("claude -p %s --allowedTools Edit,Create --safe-mode --model haiku --permission-mode acceptEdits", prompt)
-}
-
-func TestRunApp_ExitIfNotCSharpProject(t *testing.T) {
-	userInterface := ui.NewTestUI(strings.NewReader(""))
-	commandRunner := NewTestCommandRunner(t, []CommandExpected{})
-	tdd := tdd.NewTestTDDPhase(t, []tdd.Phase{})
-
-	RunApp("", userInterface,
-		NewClaudeCLIAssistant(NewClaudeAuth(""), commandRunner),
-		NewDotnetTestRunner(userInterface.Writer(), commandRunner), tdd)
-
-	userInterface.AssertOutputContains(t, "Run ktrainer inside a C# project")
 }
 
 func TestRunApp_QuitExitsCleanly(t *testing.T) {

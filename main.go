@@ -3,6 +3,7 @@ package main
 import (
 	"kata-trainer/tdd"
 	"kata-trainer/ui"
+	"path/filepath"
 	"time"
 )
 
@@ -27,5 +28,12 @@ func main() {
 	assistant := NewClaudeCLIAssistant(auth, commandRunner)
 
 	userInterface.Title("ktrainer")
-	RunApp("MarsRover", userInterface, assistant, testRunner, &tdd.RedState{})
+
+	matches, _ := filepath.Glob("MarsRover/" + "*.csproj")
+	if len(matches) == 0 {
+		userInterface.Writeln("Run ktrainer inside a C# project (no *.csproj file found). Exiting.", ui.Style{})
+		return
+	}
+
+	NewAppRunner("MarsRover", userInterface, assistant, testRunner).Run(&tdd.RedState{})
 }

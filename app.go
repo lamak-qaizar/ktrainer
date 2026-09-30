@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"kata-trainer/tdd"
 	"kata-trainer/ui"
-	"path/filepath"
 	"strings"
 )
 
@@ -15,17 +14,7 @@ type AppRunner struct {
 	kataDir       string
 }
 
-func RunApp(kataDir string, userInterface ui.UserInterface, assistant Assistant, testRunner TestRunner, tddPhase tdd.TDDPhase) {
-	matches, _ := filepath.Glob("*.csproj")
-	if len(matches) == 0 {
-		userInterface.Writeln("Run ktrainer inside a C# project (no *.csproj file found). Exiting.", ui.Style{})
-		return
-	}
-	NewAppRunner(kataDir, userInterface, assistant, testRunner).Run(tddPhase)
-}
-
 func NewAppRunner(kataDir string, userInterface ui.UserInterface, assistant Assistant, testRunner TestRunner) *AppRunner {
-
 	return &AppRunner{kataDir: kataDir, userInterface: userInterface, assistant: assistant, testRunner: testRunner}
 }
 
