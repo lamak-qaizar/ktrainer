@@ -43,6 +43,7 @@ func (ui *UI) SenseiSays(str string) {
 }
 
 func (ui *UI) Title(str string) {
+	pterm.Println()
 	pterm.DefaultBigText.WithLetters(
 		putils.LettersFromStringWithStyle(str, YELLOW.toPterm().ToStyle()),
 	).Render()
