@@ -33,6 +33,7 @@ func (appRunner *AppRunner) Run(tddPhase tdd.TDDPhase) {
 		return
 	}
 
+	appRunner.userInterface.Writeln("")
 	spinner := ui.NewSpinner("Clauding...")
 	output, err := appRunner.assistant.ProposeChange(tddPhase.Prompt(input), appRunner.kata.Dir)
 	if err != nil {

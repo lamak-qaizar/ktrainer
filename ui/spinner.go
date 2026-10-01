@@ -7,7 +7,6 @@ type Spinner struct {
 }
 
 func NewSpinner(str string) *Spinner {
-	pterm.Println()
 	spinner, _ := pterm.DefaultSpinner.Start(str)
 	return &Spinner{spinner: spinner}
 }
