@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"kata-trainer/tdd"
 	"kata-trainer/ui"
 	"strings"
@@ -52,9 +51,9 @@ func (appRunner *AppRunner) Run(tddPhase tdd.TDDPhase) {
 	spinner.Success()
 	appRunner.userInterface.Writeln(output)
 
-	appRunner.userInterface.Writeln("Running tests...")
+	spinner = appRunner.userInterface.Spinner("Running tests...")
 	testsPassed := appRunner.testRunner.Run(appRunner.kata.Dir)
-	appRunner.userInterface.Writeln(fmt.Sprintf("Tests passed: %t", testsPassed))
+	spinner.Complete(testsPassed)
 
 	appRunner.Run(tddPhase.Advance(testsPassed))
 }

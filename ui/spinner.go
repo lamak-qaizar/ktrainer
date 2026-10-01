@@ -18,3 +18,11 @@ func (s *Spinner) Success() {
 func (s *Spinner) Fail() {
 	s.spinner.Fail()
 }
+
+func (s *Spinner) Complete(b bool) {
+	if !b {
+		s.Fail()
+		return
+	}
+	s.Success()
+}
