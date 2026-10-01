@@ -19,6 +19,7 @@ type UserInterface interface {
 	WriteColoured(str string, color Color)
 	SenseiSays(str string)
 	Title(str string)
+	Spinner(str string) *Spinner
 	Read() string
 }
 
@@ -56,6 +57,11 @@ func (ui *UI) Writeln(str string) {
 
 func (ui *UI) WriteColoured(str string, color Color) {
 	ui.Write(color.toPterm().Sprint(str))
+}
+
+func (ui *UI) Spinner(str string) *Spinner {
+	ui.Writeln("")
+	return NewSpinner(str)
 }
 
 func (ui *UI) Read() string {
