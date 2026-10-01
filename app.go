@@ -11,11 +11,11 @@ type AppRunner struct {
 	userInterface ui.UserInterface
 	assistant     Assistant
 	testRunner    TestRunner
-	kataDir       string
+	kata          Kata
 }
 
-func NewAppRunner(kataDir string, userInterface ui.UserInterface, assistant Assistant, testRunner TestRunner) *AppRunner {
-	return &AppRunner{kataDir: kataDir, userInterface: userInterface, assistant: assistant, testRunner: testRunner}
+func NewAppRunner(kata Kata, userInterface ui.UserInterface, assistant Assistant, testRunner TestRunner) *AppRunner {
+	return &AppRunner{kata: kata, userInterface: userInterface, assistant: assistant, testRunner: testRunner}
 }
 
 func (appRunner *AppRunner) Run(tddPhase tdd.TDDPhase) {
@@ -34,7 +34,7 @@ func (appRunner *AppRunner) Run(tddPhase tdd.TDDPhase) {
 	}
 
 	spinner := ui.NewSpinner("Clauding...")
-	output, err := appRunner.assistant.ProposeChange(tddPhase.Prompt(input), appRunner.kataDir)
+	output, err := appRunner.assistant.ProposeChange(tddPhase.Prompt(input), appRunner.kata.Dir)
 	if err != nil {
 		spinner.Fail()
 		appRunner.userInterface.Writeln("Error calling Claude:"+output, ui.Style{})
@@ -53,7 +53,7 @@ func (appRunner *AppRunner) Run(tddPhase tdd.TDDPhase) {
 	appRunner.userInterface.Writeln(output, ui.Style{})
 
 	appRunner.userInterface.Writeln("Running tests...", ui.Style{})
-	testsPassed := appRunner.testRunner.Run(appRunner.kataDir)
+	testsPassed := appRunner.testRunner.Run(appRunner.kata.Dir)
 	appRunner.userInterface.Writeln(fmt.Sprintf("Tests passed: %t", testsPassed), ui.Style{})
 
 	appRunner.Run(tddPhase.Advance(testsPassed))
