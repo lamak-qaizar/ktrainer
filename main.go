@@ -39,7 +39,8 @@ func main() {
 
 	matches, _ := filepath.Glob(kataDir() + "/*.csproj")
 	if len(matches) == 0 {
-		userInterface.Writeln("Run ktrainer inside a C# project (no *.csproj file found). Exiting.", ui.Style{})
+		userInterface.Writeln("Run ktrainer inside a C# project (no *.csproj file found). Exiting...", ui.Style{})
+		userInterface.Writeln("To create a new project, run:\n\ndotnet new xunit -n <project_name>\n", ui.Style{})
 		return
 	}
 
