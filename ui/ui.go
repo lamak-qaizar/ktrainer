@@ -35,16 +35,15 @@ func NewUI() *UI {
 }
 
 func (ui *UI) SenseiSays(str string) {
-	pterm.Println()
-	pterm.DefaultBox.WithHorizontalPadding(2).WithVerticalPadding(1).WithTitleTopCenter().WithTitle(pterm.Cyan(" sensei says ")).Print(str)
-	pterm.Println()
+	says := pterm.DefaultBox.WithHorizontalPadding(2).WithVerticalPadding(1).WithTitleTopCenter().WithTitle(pterm.Cyan(" sensei says ")).Sprint(str)
+	ui.Write("\n" + says + "\n")
 }
 
 func (ui *UI) Title(str string) {
-	pterm.Println()
-	pterm.DefaultBigText.WithLetters(
+	title, _ := pterm.DefaultBigText.WithLetters(
 		putils.LettersFromStringWithStyle(str, YELLOW.toPterm().ToStyle()),
-	).Render()
+	).Srender()
+	ui.Write("\n" + title + "\n")
 }
 
 func (ui *UI) Write(str string) {
@@ -56,7 +55,7 @@ func (ui *UI) Writeln(str string) {
 }
 
 func (ui *UI) WriteColoured(str string, color Color) {
-	fmt.Fprint(ui.output, color.toPterm().Sprint(str))
+	ui.Write(color.toPterm().Sprint(str))
 }
 
 func (ui *UI) Read() string {
