@@ -25,5 +25,5 @@ func (refacor *RefactorState) ForceAdvance() TDDPhase {
 
 func (refactor *RefactorState) PrintInstructions(userInterface ui.UserInterface) {
 	instructions(userInterface, refactor.Phase().String(), ui.YELLOW,
-		"Specify design improvements if any, otherwise type 'next'.")
+		"Specify design improvements, or type 'next'.")
 }
