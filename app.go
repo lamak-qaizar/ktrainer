@@ -52,8 +52,13 @@ func (appRunner *AppRunner) Run(tddPhase tdd.TDDPhase) {
 	appRunner.userInterface.Writeln(output)
 
 	spinner = appRunner.userInterface.Spinner("Running tests...")
-	testsPassed := appRunner.testRunner.Run(appRunner.kata.Dir)
-	spinner.Complete(testsPassed)
+	testsPassed, testOutput := appRunner.testRunner.Run(appRunner.kata.Dir)
+	if !testsPassed {
+		spinner.Fail()
+		appRunner.userInterface.Writeln(testOutput)
+	} else {
+		spinner.Success()
+	}
 
 	appRunner.Run(tddPhase.Advance(testsPassed))
 }
