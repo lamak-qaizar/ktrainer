@@ -3,6 +3,7 @@ package ui
 import (
 	"bufio"
 	"bytes"
+	"fmt"
 	"io"
 	"os"
 	"strings"
@@ -12,13 +13,10 @@ import (
 	"github.com/pterm/pterm/putils"
 )
 
-type Style struct {
-	Color Color
-}
-
 type UserInterface interface {
-	Write(str string, style Style)
-	Writeln(str string, style Style)
+	Write(str string)
+	Writeln(str string)
+	WriteColoured(str string, color Color)
 	SenseiSays(str string)
 	Title(str string)
 	Read() string
@@ -49,12 +47,16 @@ func (ui *UI) Title(str string) {
 	).Render()
 }
 
-func (ui *UI) Write(str string, style Style) {
-	style.Color.toPterm().Print(str)
+func (ui *UI) Write(str string) {
+	fmt.Fprint(ui.output, str)
 }
 
-func (ui *UI) Writeln(str string, style Style) {
-	ui.Write(str+"\n", style)
+func (ui *UI) Writeln(str string) {
+	ui.Write(str + "\n")
+}
+
+func (ui *UI) WriteColoured(str string, color Color) {
+	fmt.Fprint(ui.output, color.toPterm().Sprint(str))
 }
 
 func (ui *UI) Read() string {

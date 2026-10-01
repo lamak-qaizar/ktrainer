@@ -12,8 +12,8 @@ func SetupClaudeAuth(userInterface ui.UserInterface) *ClaudeAuth {
 		return NewClaudeAuth(token)
 	}
 
-	userInterface.Writeln("Run 'claude setup-token' and paste the token here.", ui.Style{})
-	userInterface.Write("> ", ui.Style{})
+	userInterface.Writeln("Run 'claude setup-token' and paste the token here.")
+	userInterface.Write("> ")
 	token = userInterface.Read()
 	SaveTokenToConfig(token, time.Now().Add(tokenTTL))
 	return NewClaudeAuth(token)

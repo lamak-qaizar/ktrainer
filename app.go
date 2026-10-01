@@ -24,7 +24,7 @@ func (appRunner *AppRunner) Run(tddPhase tdd.TDDPhase) {
 	input := appRunner.userInterface.Read()
 
 	if input == "exit" {
-		appRunner.userInterface.Writeln("Exiting kata trainer.", ui.Style{})
+		appRunner.userInterface.Writeln("Exiting kata trainer.")
 		return
 	}
 
@@ -37,24 +37,24 @@ func (appRunner *AppRunner) Run(tddPhase tdd.TDDPhase) {
 	output, err := appRunner.assistant.ProposeChange(tddPhase.Prompt(input), appRunner.kata.Dir)
 	if err != nil {
 		spinner.Fail()
-		appRunner.userInterface.Writeln("Error calling Claude:"+output, ui.Style{})
+		appRunner.userInterface.Writeln("Error calling Claude:" + output)
 		appRunner.Run(tddPhase)
 		return
 	}
 
 	if reason, rejected := extractRejection(output); rejected {
 		spinner.Fail()
-		appRunner.userInterface.Write("A TDD rule was broken, no changes made. "+reason, ui.Style{})
+		appRunner.userInterface.Write("A TDD rule was broken, no changes made. " + reason)
 		appRunner.Run(tddPhase)
 		return
 	}
 
 	spinner.Success()
-	appRunner.userInterface.Writeln(output, ui.Style{})
+	appRunner.userInterface.Writeln(output)
 
-	appRunner.userInterface.Writeln("Running tests...", ui.Style{})
+	appRunner.userInterface.Writeln("Running tests...")
 	testsPassed := appRunner.testRunner.Run(appRunner.kata.Dir)
-	appRunner.userInterface.Writeln(fmt.Sprintf("Tests passed: %t", testsPassed), ui.Style{})
+	appRunner.userInterface.Writeln(fmt.Sprintf("Tests passed: %t", testsPassed))
 
 	appRunner.Run(tddPhase.Advance(testsPassed))
 }
