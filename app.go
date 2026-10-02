@@ -43,7 +43,8 @@ func (appRunner *AppRunner) Run(tddPhase tdd.TDDPhase) {
 
 	if reason, rejected := extractRejection(output); rejected {
 		spinner.Fail()
-		appRunner.userInterface.Write("A TDD rule was broken, no changes made. " + reason)
+		appRunner.userInterface.WriteColoured("No changes made: ", ui.RED)
+		appRunner.userInterface.Writeln(reason)
 		appRunner.Run(tddPhase)
 		return
 	}
