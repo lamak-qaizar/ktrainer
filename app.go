@@ -36,21 +36,21 @@ func (appRunner *AppRunner) Run(tddPhase tdd.TDDPhase) {
 	output, err := appRunner.assistant.ProposeChange(tddPhase.Prompt(input), appRunner.kata.Dir)
 	if err != nil {
 		spinner.Fail()
-		appRunner.userInterface.Writeln("Error calling Claude:" + output)
+		appRunner.userInterface.Writeln("\nError calling Claude:" + output)
 		appRunner.Run(tddPhase)
 		return
 	}
 
 	if reason, rejected := extractRejection(output); rejected {
 		spinner.Fail()
-		appRunner.userInterface.WriteColoured("No changes made: ", ui.RED)
+		appRunner.userInterface.WriteColoured("\nNo changes made: ", ui.RED)
 		appRunner.userInterface.Writeln(reason)
 		appRunner.Run(tddPhase)
 		return
 	}
 
 	spinner.Success()
-	appRunner.userInterface.Writeln(output)
+	appRunner.userInterface.Writeln("\n" + output)
 
 	testsPassed := appRunner.runTests()
 
