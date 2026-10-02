@@ -15,7 +15,7 @@ func SetupClaudeAuth(userInterface ui.UserInterface) *ClaudeAuth {
 		return NewClaudeAuth(token)
 	}
 
-	userInterface.Writeln("Run 'claude setup-token' and paste the token here.")
+	userInterface.Writeln("Run 'claude setup-token' in another Terminal and paste the token here.")
 	userInterface.Write("> ")
 	token = userInterface.Read()
 	SaveTokenToConfig(token, time.Now().Add(tokenTTL))
