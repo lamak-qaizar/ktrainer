@@ -24,12 +24,13 @@ func SetupConfig(userInterface ui.UserInterface) *Config {
 func main() {
 	userInterface := ui.NewUI()
 	userInterface.Title("ktrainer")
-	userInterface.WriteColoured("v"+version+"\n\n", ui.GRAY)
 
 	commandRunner := NewCommandRunner()
 	testRunner := NewDotnetTestRunner(userInterface.Writer(), commandRunner)
-	auth := SetupConfig(userInterface)
-	assistant := NewClaudeCLIAssistant(auth, commandRunner)
+	config := SetupConfig(userInterface)
+	userInterface.WriteColoured("v"+version+" | $env:APPDATA\\ktrainer\\config.json { model: "+config.Model+" }\n\n", ui.GRAY)
+
+	assistant := NewClaudeCLIAssistant(config, commandRunner)
 
 	kata, err := NewKata(ExtractKataDirFromOsArgs(), userInterface.Writer())
 	if err != nil {
