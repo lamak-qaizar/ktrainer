@@ -32,6 +32,7 @@ type TDDPhase interface {
 	Prompt(userInput string) string
 	ForceAdvance() TDDPhase
 	PrintInstructions(userInterface ui.UserInterface)
+	NoAdvance() TDDPhase
 }
 
 type TestTDDPhase struct {
@@ -65,7 +66,9 @@ func (tdd *TestTDDPhase) Advance(testsPassed bool) TDDPhase {
 	}
 }
 
-func instructions(userInterface ui.UserInterface, phase string, color ui.Color, senseiSays string) {
-	userInterface.SenseiSays(senseiSays)
+func instructions(userInterface ui.UserInterface, phase string, color ui.Color, senseiSays string, advanced bool) {
+	if advanced {
+		userInterface.SenseiSays(senseiSays)
+	}
 	userInterface.WriteColoured("\n"+strings.ToUpper(phase)+" > ", color)
 }

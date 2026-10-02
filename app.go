@@ -37,7 +37,7 @@ func (appRunner *AppRunner) Run(tddPhase tdd.TDDPhase) {
 	if err != nil {
 		spinner.Fail()
 		appRunner.userInterface.Writeln("\nError calling Claude:" + output)
-		appRunner.Run(tddPhase)
+		appRunner.Run(tddPhase.NoAdvance())
 		return
 	}
 
@@ -45,7 +45,7 @@ func (appRunner *AppRunner) Run(tddPhase tdd.TDDPhase) {
 		spinner.Fail()
 		appRunner.userInterface.WriteColoured("\nNo changes made: ", ui.RED)
 		appRunner.userInterface.Writeln(reason)
-		appRunner.Run(tddPhase)
+		appRunner.Run(tddPhase.NoAdvance())
 		return
 	}
 

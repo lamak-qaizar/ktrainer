@@ -5,6 +5,7 @@ import (
 )
 
 type GreenState struct {
+	Advanced bool
 }
 
 func (green *GreenState) Phase() Phase {
@@ -13,10 +14,10 @@ func (green *GreenState) Phase() Phase {
 
 func (green *GreenState) Advance(testsPassed bool) TDDPhase {
 	if !testsPassed {
-		return green
+		return green.NoAdvance()
 	}
 
-	return &RefactorState{}
+	return &RefactorState{Advanced: true}
 }
 
 func (green *GreenState) Prompt(userInput string) string {
@@ -24,10 +25,14 @@ func (green *GreenState) Prompt(userInput string) string {
 }
 
 func (green *GreenState) ForceAdvance() TDDPhase {
-	return &RefactorState{}
+	return &RefactorState{Advanced: true}
 }
 
 func (green *GreenState) PrintInstructions(userInterface ui.UserInterface) {
 	instructions(userInterface, green.Phase().String(), ui.GREEN,
-		"How would you like to pass the test? Provide the simplest solution possible.")
+		"How would you like to pass the test? Provide the simplest solution possible.", green.Advanced)
+}
+
+func (red *GreenState) NoAdvance() TDDPhase {
+	return &GreenState{}
 }

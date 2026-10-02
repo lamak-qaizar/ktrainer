@@ -5,6 +5,7 @@ import (
 )
 
 type RedState struct {
+	Advanced bool
 }
 
 func (red *RedState) Phase() Phase {
@@ -13,10 +14,10 @@ func (red *RedState) Phase() Phase {
 
 func (red *RedState) Advance(testsPassed bool) TDDPhase {
 	if testsPassed {
-		return red
+		return red.NoAdvance()
 	}
 
-	return &GreenState{}
+	return &GreenState{Advanced: true}
 }
 
 func (red *RedState) Prompt(userInput string) string {
@@ -24,10 +25,14 @@ func (red *RedState) Prompt(userInput string) string {
 }
 
 func (red *RedState) ForceAdvance() TDDPhase {
-	return &GreenState{}
+	return &GreenState{Advanced: true}
 }
 
 func (red *RedState) PrintInstructions(userInterface ui.UserInterface) {
 	instructions(userInterface, red.Phase().String(), ui.RED,
-		"Describe the failing test to write.")
+		"Describe the failing test to write.", red.Advanced)
+}
+
+func (red *RedState) NoAdvance() TDDPhase {
+	return &RedState{}
 }

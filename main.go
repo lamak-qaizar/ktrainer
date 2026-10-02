@@ -38,5 +38,5 @@ func main() {
 		return
 	}
 
-	NewAppRunner(*kata, userInterface, assistant, testRunner).Run(&tdd.RedState{})
+	NewAppRunner(*kata, userInterface, assistant, testRunner).Run(&tdd.RedState{Advanced: true})
 }
