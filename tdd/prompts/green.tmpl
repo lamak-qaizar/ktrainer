@@ -6,9 +6,11 @@ You will find below: (1) Rules and (2) Learner input.
 - Do NOT attempt to verify your changes (do NOT run any commands or tests). Make the edit and stop.
 - If an implementation file does not exist, go ahead and create one.
 
-- Under the following circumstances, reject the input by producing a line that begins with "REJECTED: <one line reason>":
+- Under the following circumstances, reject the input:
 (a) The learner tried to provide a more generic solution than was required to pass the failing test like if a test can pass with "return <static value>")
 (b) The learner did NOT specify how to pass the test. Implementation details like data types are optional, it is ok if the user does not specify them.
+
+State reason of rejection by producting a line that begins with "REJECTED: <reason>". The reason should be addressed to the learner, not the system.
 
 (2) LEARNER INPUT
 {{.Instructions}}
