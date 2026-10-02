@@ -51,7 +51,13 @@ func (appRunner *AppRunner) Run(tddPhase tdd.TDDPhase) {
 	spinner.Success()
 	appRunner.userInterface.Writeln(output)
 
-	spinner = appRunner.userInterface.Spinner("Running tests...")
+	testsPassed := appRunner.runTests()
+
+	appRunner.Run(tddPhase.Advance(testsPassed))
+}
+
+func (appRunner *AppRunner) runTests() (testsPassed bool) {
+	spinner := appRunner.userInterface.Spinner("Running tests...")
 	testsPassed, testOutput := appRunner.testRunner.Run(appRunner.kata.Dir)
 	if !testsPassed {
 		spinner.Fail()
@@ -59,8 +65,7 @@ func (appRunner *AppRunner) Run(tddPhase tdd.TDDPhase) {
 	} else {
 		spinner.Success()
 	}
-
-	appRunner.Run(tddPhase.Advance(testsPassed))
+	return testsPassed
 }
 
 func extractRejection(output string) (reason string, rejected bool) {
