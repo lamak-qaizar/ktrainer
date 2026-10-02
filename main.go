@@ -29,6 +29,7 @@ func main() {
 	testRunner := NewDotnetTestRunner(userInterface.Writer(), commandRunner)
 	config := SetupConfig(userInterface)
 	userInterface.WriteColoured("v"+version+" | $env:APPDATA\\ktrainer\\config.json { model: "+config.Model+" }\n\n", ui.GRAY)
+	userInterface.Writeln("NOTE: Memory is not retained between prompts, please be explicit in your instructions.\n")
 
 	assistant := NewClaudeCLIAssistant(config, commandRunner)
 
