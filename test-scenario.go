@@ -29,7 +29,9 @@ type Step struct {
 }
 
 type Scenario struct {
-	Steps []Step
+	Steps  []Step
+	Model  string
+	Effort string
 }
 
 func (scenario *Scenario) NewlineSeperatedInputs() string {
@@ -68,6 +70,6 @@ func (scenario Scenario) Run(t *testing.T) {
 
 	kata, _ := NewKata("MarsRover", userInterface.Writer())
 	NewAppRunner(*kata, userInterface,
-		NewClaudeCLIAssistant(DefaultConfig(), commandRunner),
+		NewClaudeCLIAssistant(ConfigWithModelAndEffort(scenario.Model, scenario.Effort), commandRunner),
 		NewDotnetTestRunner(userInterface.Writer(), commandRunner)).Run(tdd)
 }

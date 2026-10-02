@@ -8,7 +8,12 @@ import (
 
 func claudeCmd(template string, userPrompt string) string {
 	prompt := tdd.PromptFrom(template, userPrompt)
-	return fmt.Sprintf("claude -p %s --allowedTools Edit,Create --safe-mode --model haiku --permission-mode acceptEdits", prompt)
+	return fmt.Sprintf("claude -p %s --allowedTools Edit,Create --safe-mode --permission-mode acceptEdits --model haiku", prompt)
+}
+
+func claudeCmdWithModelAndEffort(template string, userPrompt string, model string, effort string) string {
+	prompt := tdd.PromptFrom(template, userPrompt)
+	return fmt.Sprintf("claude -p %s --allowedTools Edit,Create --safe-mode --permission-mode acceptEdits --model %s --effort %s", prompt, model, effort)
 }
 
 func TestRunApp_QuitExitsCleanly(t *testing.T) {
@@ -113,6 +118,23 @@ func TestRunApp_RefactorStaysOnRefactorUnlessUserExplicitySelectsNext(t *testing
 			{
 				Input:       "next",
 				ExpectPhase: tdd.Red,
+			},
+		},
+	}.Run(t)
+}
+
+func TestRunApp_ModelAndEffortShouldReflectInClaudeCommand(t *testing.T) {
+	Scenario{
+		Model:  "sonnet",
+		Effort: "low",
+		Steps: []Step{
+			{
+				Input: "write a test",
+				Commands: []CommandExpected{
+					{Command: claudeCmdWithModelAndEffort("red.tmpl", "write a test", "sonnet", "low")},
+					{Command: "dotnet test", Mock: NewErrorResponse()},
+				},
+				ExpectPhase: tdd.Green,
 			},
 		},
 	}.Run(t)

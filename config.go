@@ -17,7 +17,14 @@ type Config struct {
 }
 
 func DefaultConfig() *Config {
-	return &Config{Token: "", ExpiresAt: time.Now(), Model: "haiku", Effort: "n/a"}
+	return &Config{Token: "", ExpiresAt: time.Now(), Model: "haiku", Effort: ""}
+}
+
+func ConfigWithModelAndEffort(model string, effort string) *Config {
+	if model == "" || model == "haiku" {
+		return DefaultConfig()
+	}
+	return &Config{Token: "", ExpiresAt: time.Now(), Model: model, Effort: effort}
 }
 
 func path() string {
