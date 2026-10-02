@@ -6,6 +6,9 @@ import (
 	"time"
 )
 
+// used when packaging .exe, see build file
+var version = "dev"
+
 func SetupClaudeAuth(userInterface ui.UserInterface) *ClaudeAuth {
 	token := LoadTokenFromConfig()
 	if token != "" {
@@ -27,6 +30,7 @@ func main() {
 	assistant := NewClaudeCLIAssistant(auth, commandRunner)
 
 	userInterface.Title("ktrainer")
+	userInterface.WriteColoured("v"+version+"\n\n", ui.GRAY)
 
 	kata, err := NewKata(ExtractKataDirFromOsArgs(), userInterface.Writer())
 	if err != nil {

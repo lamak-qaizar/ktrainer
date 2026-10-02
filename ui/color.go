@@ -9,6 +9,7 @@ const (
 	RED
 	GREEN
 	YELLOW
+	GRAY
 )
 
 var colors = map[Color]pterm.Color{
@@ -16,6 +17,7 @@ var colors = map[Color]pterm.Color{
 	RED:     pterm.FgRed,
 	GREEN:   pterm.FgGreen,
 	YELLOW:  pterm.FgYellow,
+	GRAY:    pterm.FgGray,
 }
 
 func (c Color) toPterm() pterm.Color {

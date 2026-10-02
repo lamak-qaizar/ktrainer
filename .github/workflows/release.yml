@@ -28,7 +28,10 @@ jobs:
           echo "version=$MAJOR.$MINOR.$((PATCH+1))" >> "$GITHUB_OUTPUT"
       
       - name: Build
-        run: GOOS=windows GOARCH=amd64 go build -ldflags "-s -w" -o build/ktrainer.exe .
+        run: |
+          GOOS=windows GOARCH=amd64 go build \
+            -ldflags "-s -w -X main.version=${{ steps.version.outputs.version }}" \
+            -o build/ktrainer.exe .
 
       - name: Create Scoop manifest
         run: |
