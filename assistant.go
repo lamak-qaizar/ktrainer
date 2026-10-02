@@ -11,25 +11,25 @@ type Assistant interface {
 }
 
 type ClaudeCLIAssistant struct {
-	auth   *ClaudeAuth
+	config *Config
 	runner Runner
 }
 
-func NewClaudeCLIAssistant(auth *ClaudeAuth, runner Runner) *ClaudeCLIAssistant {
-	return &ClaudeCLIAssistant{auth: auth, runner: runner}
+func NewClaudeCLIAssistant(config *Config, runner Runner) *ClaudeCLIAssistant {
+	return &ClaudeCLIAssistant{config: config, runner: runner}
 }
 
 func (assistant ClaudeCLIAssistant) invalidatePersistedTokenIfSessionHasExpired(output string, err error) {
 	if err != nil {
 		if strings.Contains(string(output), "OAuth session expired") ||
 			strings.Contains(string(output), "Your organization has disabled Claude subscription") {
-			assistant.auth.Invalidate()
+			assistant.config.Invalidate()
 		}
 	}
 }
 
 func (assitant ClaudeCLIAssistant) ProposeChange(instructions string, kataDir string) (string, error) {
-	env := append(os.Environ(), "CLAUDE_CODE_OAUTH_TOKEN="+assitant.auth.token)
+	env := append(os.Environ(), "CLAUDE_CODE_OAUTH_TOKEN="+assitant.config.Token)
 	output, err := assitant.runner.Run("claude",
 		[]string{"-p", instructions, "--allowedTools", "Edit,Create", "--safe-mode", "--model", "haiku", "--permission-mode", "acceptEdits"},
 		kataDir, env, io.Discard)

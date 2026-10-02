@@ -68,6 +68,6 @@ func (scenario Scenario) Run(t *testing.T) {
 
 	kata, _ := NewKata("MarsRover", userInterface.Writer())
 	NewAppRunner(*kata, userInterface,
-		NewClaudeCLIAssistant(NewClaudeAuth(""), commandRunner),
+		NewClaudeCLIAssistant(DefaultConfig(), commandRunner),
 		NewDotnetTestRunner(userInterface.Writer(), commandRunner)).Run(tdd)
 }
