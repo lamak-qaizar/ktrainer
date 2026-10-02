@@ -68,7 +68,7 @@ func (scenario Scenario) Run(t *testing.T) {
 	commandRunner := NewTestCommandRunner(t, scenario.Commands())
 	tdd := tdd.NewTestTDDPhase(t, scenario.Phases())
 
-	kata, _ := NewKata("MarsRover", userInterface.Writer())
+	kata, _ := NewKata("MarsRover", userInterface)
 	NewAppRunner(*kata, userInterface,
 		NewClaudeCLIAssistant(ConfigWithModelAndEffort(scenario.Model, scenario.Effort), commandRunner),
 		NewDotnetTestRunner(userInterface.Writer(), commandRunner)).Run(tdd)

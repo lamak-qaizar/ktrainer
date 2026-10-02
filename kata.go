@@ -2,8 +2,7 @@ package main
 
 import (
 	"errors"
-	"fmt"
-	"io"
+	"kata-trainer/ui"
 	"os"
 	"path/filepath"
 )
@@ -19,12 +18,12 @@ func ExtractKataDirFromOsArgs() string {
 	return "."
 }
 
-func NewKata(dir string, output io.Writer) (*Kata, error) {
+func NewKata(dir string, userInterface ui.UserInterface) (*Kata, error) {
 	matches, _ := filepath.Glob(dir + "/*.csproj")
 	if len(matches) == 0 {
-		fmt.Fprint(output, "Oops, no *.csproj file found. Run ktrainer inside a C# project or specify path: 'krainer <path>'.\n\n")
-		fmt.Fprint(output, "To create a new project: dotnet new xunit -n <name>\n\n")
-		fmt.Fprint(output, "Exiting...\n\n")
+		userInterface.WriteColoured("Oops, no *.csproj file found. Run ktrainer inside a C# project or specify path: 'krainer <path>'.\n\n", ui.RED)
+		userInterface.Writeln("To create a new project: dotnet new xunit -n <name>\n")
+		userInterface.Writeln("Exiting...\n")
 		return nil, errors.New("Run ktrainer inside a C# project")
 	}
 

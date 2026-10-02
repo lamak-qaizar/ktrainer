@@ -33,7 +33,7 @@ func main() {
 
 	assistant := NewClaudeCLIAssistant(config, commandRunner)
 
-	kata, err := NewKata(ExtractKataDirFromOsArgs(), userInterface.Writer())
+	kata, err := NewKata(ExtractKataDirFromOsArgs(), userInterface)
 	if err != nil {
 		return
 	}
