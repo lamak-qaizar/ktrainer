@@ -2,3 +2,5 @@ MarsRover/*
 build/*
 
 !MarsRover/MarsRover.csproj
+
+*.log
