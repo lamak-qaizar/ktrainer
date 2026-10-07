@@ -1,6 +1,7 @@
 package main
 
 import (
+	"kata-trainer/app"
 	"kata-trainer/tdd"
 	"kata-trainer/ui"
 )
@@ -8,8 +9,8 @@ import (
 // used when packaging .exe, see build file
 var version = "dev"
 
-func SetupConfig(userInterface ui.UserInterface) *Config {
-	config := InitConfig()
+func SetupConfig(userInterface ui.UserInterface) *app.Config {
+	config := app.InitConfig()
 	if config.HasValidToken() {
 		return config
 	}
@@ -25,18 +26,18 @@ func main() {
 	userInterface := ui.NewUI()
 	userInterface.Title("ktrainer")
 
-	commandRunner := NewCommandRunner()
-	testRunner := NewDotnetTestRunner(userInterface.Writer(), commandRunner)
+	commandRunner := app.NewCommandRunner()
+	testRunner := app.NewDotnetTestRunner(userInterface.Writer(), commandRunner)
 	config := SetupConfig(userInterface)
 	userInterface.WriteColoured("v"+version+" | $env:APPDATA\\ktrainer\\config.json { model: "+config.Model+" }\n\n", ui.GRAY)
 	userInterface.Writeln("NOTE: Memory is not retained between prompts, please be explicit in your instructions.\n")
 
-	assistant := NewClaudeCLIAssistant(config, commandRunner)
+	assistant := app.NewClaudeCLIAssistant(config, commandRunner)
 
-	kata, err := NewKata(ExtractKataDirFromOsArgs(), userInterface)
+	kata, err := app.NewKata(app.ExtractKataDirFromOsArgs(), userInterface)
 	if err != nil {
 		return
 	}
 
-	NewAppRunner(*kata, userInterface, assistant, testRunner).Run(&tdd.RedState{Advanced: true})
+	app.NewAppRunner(*kata, userInterface, assistant, testRunner).Run(&tdd.RedState{Advanced: true})
 }

@@ -1,7 +1,8 @@
-package main
+package test
 
 import (
 	"fmt"
+	"kata-trainer/app"
 	"kata-trainer/tdd"
 	"testing"
 )
@@ -26,9 +27,9 @@ func TestRunApp_RedToGreenWhenTestFails(t *testing.T) {
 		Steps: []Step{
 			{
 				Input: "write a test",
-				Commands: []CommandExpected{
+				Commands: []app.CommandExpected{
 					{Command: claudeCmd("red.tmpl", "write a test")},
-					{Command: "dotnet test", Mock: NewErrorResponse()},
+					{Command: "dotnet test", Mock: app.NewErrorResponse()},
 				},
 				ExpectPhase: tdd.Green,
 			},
@@ -41,7 +42,7 @@ func TestRunApp_StayOnRedWhenTestPasses(t *testing.T) {
 		Steps: []Step{
 			{
 				Input: "write a test",
-				Commands: []CommandExpected{
+				Commands: []app.CommandExpected{
 					{Command: claudeCmd("red.tmpl", "write a test")},
 					{Command: "dotnet test"},
 				},
@@ -56,8 +57,8 @@ func TestRunApp_StayOnRedWhenClaudeRejectsPrompt(t *testing.T) {
 		Steps: []Step{
 			{
 				Input: "write all tests",
-				Commands: []CommandExpected{
-					{Command: claudeCmd("red.tmpl", "write all tests"), Mock: MockResponse{Output: "REJECTED: write one test only"}},
+				Commands: []app.CommandExpected{
+					{Command: claudeCmd("red.tmpl", "write all tests"), Mock: app.MockResponse{Output: "REJECTED: write one test only"}},
 				},
 				ExpectPhase: tdd.Red,
 			},
@@ -70,15 +71,15 @@ func TestRunApp_RefactorAfterTestsPassOnGreen(t *testing.T) {
 		Steps: []Step{
 			{
 				Input: "write a test",
-				Commands: []CommandExpected{
+				Commands: []app.CommandExpected{
 					{Command: claudeCmd("red.tmpl", "write a test")},
-					{Command: "dotnet test", Mock: NewErrorResponse()},
+					{Command: "dotnet test", Mock: app.NewErrorResponse()},
 				},
 				ExpectPhase: tdd.Green,
 			},
 			{
 				Input: "pass the test",
-				Commands: []CommandExpected{
+				Commands: []app.CommandExpected{
 					{Command: claudeCmd("green.tmpl", "pass the test")},
 					{Command: "dotnet test"},
 				},
@@ -93,15 +94,15 @@ func TestRunApp_RefactorStaysOnRefactorUnlessUserExplicitySelectsNext(t *testing
 		Steps: []Step{
 			{
 				Input: "write a test",
-				Commands: []CommandExpected{
+				Commands: []app.CommandExpected{
 					{Command: claudeCmd("red.tmpl", "write a test")},
-					{Command: "dotnet test", Mock: NewErrorResponse()},
+					{Command: "dotnet test", Mock: app.NewErrorResponse()},
 				},
 				ExpectPhase: tdd.Green,
 			},
 			{
 				Input: "pass the test",
-				Commands: []CommandExpected{
+				Commands: []app.CommandExpected{
 					{Command: claudeCmd("green.tmpl", "pass the test")},
 					{Command: "dotnet test"},
 				},
@@ -109,7 +110,7 @@ func TestRunApp_RefactorStaysOnRefactorUnlessUserExplicitySelectsNext(t *testing
 			},
 			{
 				Input: "refactor the code",
-				Commands: []CommandExpected{
+				Commands: []app.CommandExpected{
 					{Command: claudeCmd("refactor.tmpl", "refactor the code")},
 					{Command: "dotnet test"},
 				},
@@ -130,9 +131,9 @@ func TestRunApp_ModelAndEffortShouldReflectInClaudeCommand(t *testing.T) {
 		Steps: []Step{
 			{
 				Input: "write a test",
-				Commands: []CommandExpected{
+				Commands: []app.CommandExpected{
 					{Command: claudeCmdWithModelAndEffort("red.tmpl", "write a test", "sonnet", "low")},
-					{Command: "dotnet test", Mock: NewErrorResponse()},
+					{Command: "dotnet test", Mock: app.NewErrorResponse()},
 				},
 				ExpectPhase: tdd.Green,
 			},

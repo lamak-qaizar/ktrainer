@@ -1,7 +1,8 @@
-package main
+package app
 
 import (
 	"bytes"
+	"errors"
 	"io"
 	"os/exec"
 	"strings"
@@ -34,6 +35,20 @@ func (CommandRunner) Run(name string, args []string, dir string, env []string, o
 
 	err := cmd.Run()
 	return buf.String(), err
+}
+
+type MockResponse struct {
+	Output string
+	Err    error
+}
+
+func NewErrorResponse() MockResponse {
+	return MockResponse{Err: errors.New("")}
+}
+
+type CommandExpected struct {
+	Command string
+	Mock    MockResponse
 }
 
 type TestCommandRunner struct {

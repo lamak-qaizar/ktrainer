@@ -1,30 +1,16 @@
-package main
+package test
 
 import (
-	"errors"
+	"kata-trainer/app"
 	"kata-trainer/tdd"
 	"kata-trainer/ui"
 	"strings"
 	"testing"
 )
 
-type MockResponse struct {
-	Output string
-	Err    error
-}
-
-func NewErrorResponse() MockResponse {
-	return MockResponse{Err: errors.New("")}
-}
-
-type CommandExpected struct {
-	Command string
-	Mock    MockResponse
-}
-
 type Step struct {
 	Input       string
-	Commands    []CommandExpected
+	Commands    []app.CommandExpected
 	ExpectPhase tdd.Phase
 }
 
@@ -46,8 +32,8 @@ func (scenario *Scenario) NewlineSeperatedInputs() string {
 	return strings.Join(inputs, "\n") + "\n"
 }
 
-func (scenario *Scenario) Commands() []CommandExpected {
-	var commands []CommandExpected
+func (scenario *Scenario) Commands() []app.CommandExpected {
+	var commands []app.CommandExpected
 	for _, step := range scenario.Steps {
 		commands = append(commands, step.Commands...)
 	}
@@ -65,11 +51,11 @@ func (scenario *Scenario) Phases() []tdd.Phase {
 func (scenario Scenario) Run(t *testing.T) {
 	input := strings.NewReader(scenario.NewlineSeperatedInputs() + "exit\n")
 	userInterface := ui.NewTestUI(input)
-	commandRunner := NewTestCommandRunner(t, scenario.Commands())
+	commandRunner := app.NewTestCommandRunner(t, scenario.Commands())
 	tdd := tdd.NewTestTDDPhase(t, scenario.Phases())
 
-	kata, _ := NewKata("MarsRover", userInterface)
-	NewAppRunner(*kata, userInterface,
-		NewClaudeCLIAssistant(ConfigWithModelAndEffort(scenario.Model, scenario.Effort), commandRunner),
-		NewDotnetTestRunner(userInterface.Writer(), commandRunner)).Run(tdd)
+	kata, _ := app.NewKata("../MarsRover", userInterface)
+	app.NewAppRunner(*kata, userInterface,
+		app.NewClaudeCLIAssistant(app.ConfigWithModelAndEffort(scenario.Model, scenario.Effort), commandRunner),
+		app.NewDotnetTestRunner(userInterface.Writer(), commandRunner)).Run(tdd)
 }
