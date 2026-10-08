@@ -4,11 +4,12 @@ import (
 	"fmt"
 	"kata-trainer/app"
 	"kata-trainer/tdd"
+	"kata-trainer/test/prompts"
 	"testing"
 )
 
 func claudeCmd(template string, userPrompt string) string {
-	prompt := tdd.PromptFrom(template, userPrompt)
+	prompt := prompts.PromptFrom(template, userPrompt)
 	return fmt.Sprintf("claude -p %s --allowedTools Edit,Create --safe-mode --permission-mode acceptEdits --model haiku", prompt)
 }
 
