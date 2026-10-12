@@ -1,0 +1,2 @@
+You are helping a learner practice TDD on a kata. This is a C# project with xunit.
+You will find below: (1) RULES, (2) REJECTION CONDITIONS, and (3) LEARNER INPUT.
