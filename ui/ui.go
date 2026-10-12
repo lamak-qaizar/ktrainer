@@ -75,23 +75,34 @@ func (ui *UI) Writer() io.Writer {
 
 type TestUI struct {
 	*UI
-	output *bytes.Buffer
+	output     *bytes.Buffer
+	t          *testing.T
+	senseiSaid []string
+	pos        int
 }
 
-func NewTestUI(input io.Reader) *TestUI {
+func NewTestUI(input io.Reader, t *testing.T, senseiSaid []string) *TestUI {
 	var buf bytes.Buffer
 	pterm.SetDefaultOutput(&buf)
 	pterm.DefaultSpinner.Writer = &buf
 	return &TestUI{
-		UI:     &UI{reader: bufio.NewReader(input), output: &buf},
-		output: &buf,
+		UI:         &UI{reader: bufio.NewReader(input), output: &buf},
+		output:     &buf,
+		t:          t,
+		senseiSaid: senseiSaid,
+		pos:        0,
 	}
 }
 
-func (t *TestUI) AssertOutputContains(test *testing.T, want string) {
-	test.Helper()
-	got := t.output.String()
-	if !strings.Contains(got, want) {
-		test.Errorf("Expected output to contain %q, got: %s", want, got)
+func (ui *TestUI) SenseiSays(str string) {
+	if ui.pos >= len(ui.senseiSaid) {
+		ui.t.Fatalf("Sensei is out of things to say")
 	}
+
+	exp := ui.senseiSaid[ui.pos]
+	if !strings.Contains(str, exp) {
+		ui.t.Fatalf("Expected sensei to say: %q, got: %q, step: %d", exp, str, ui.pos)
+	}
+
+	ui.pos++
 }

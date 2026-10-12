@@ -44,7 +44,7 @@ type TestTDDPhase struct {
 
 func NewTestTDDPhase(t *testing.T, expected []Phase) *TestTDDPhase {
 	return &TestTDDPhase{
-		TDDPhase:       &RedState{},
+		TDDPhase:       &RedState{Advanced: true},
 		t:              t,
 		expectedPhases: expected,
 	}

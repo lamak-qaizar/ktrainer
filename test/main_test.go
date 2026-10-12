@@ -19,20 +19,31 @@ func claudeCmdWithModelAndEffort(template string, userPrompt string, model strin
 }
 
 func TestRunApp_QuitExitsCleanly(t *testing.T) {
-	// "exit" input is added by runner
-	Scenario{}.Run(t)
+	Scenario{
+		Steps: []Step{
+			{
+				Sensei: "Describe the failing test",
+				Input:  "exit",
+			},
+		},
+	}.Run(t)
 }
 
 func TestRunApp_RedToGreenWhenTestFails(t *testing.T) {
 	Scenario{
 		Steps: []Step{
 			{
-				Input: "write a test",
+				Sensei: "Describe the failing test",
+				Input:  "write a test",
 				Commands: []app.CommandExpected{
 					{Command: claudeCmd("red.tmpl", "write a test")},
 					{Command: "dotnet test", Mock: app.NewErrorResponse()},
 				},
 				ExpectPhase: tdd.Green,
+			},
+			{
+				Sensei: "How would you like to pass the test?",
+				Input:  "exit",
 			},
 		},
 	}.Run(t)
@@ -42,12 +53,17 @@ func TestRunApp_StayOnRedWhenTestPasses(t *testing.T) {
 	Scenario{
 		Steps: []Step{
 			{
-				Input: "write a test",
+				Sensei: "Describe the failing test",
+				Input:  "write a test",
 				Commands: []app.CommandExpected{
 					{Command: claudeCmd("red.tmpl", "write a test")},
 					{Command: "dotnet test"},
 				},
 				ExpectPhase: tdd.Red,
+			},
+			{
+				Sensei: "Describe the failing test",
+				Input:  "exit",
 			},
 		},
 	}.Run(t)
@@ -57,11 +73,16 @@ func TestRunApp_StayOnRedWhenClaudeRejectsPrompt(t *testing.T) {
 	Scenario{
 		Steps: []Step{
 			{
-				Input: "write all tests",
+				Sensei: "Describe the failing test",
+				Input:  "write all tests",
 				Commands: []app.CommandExpected{
 					{Command: claudeCmd("red.tmpl", "write all tests"), Mock: app.MockResponse{Output: "REJECTED: write one test only"}},
 				},
 				ExpectPhase: tdd.Red,
+			},
+			{
+				Sensei: "Describe the failing test",
+				Input:  "exit",
 			},
 		},
 	}.Run(t)
@@ -71,7 +92,8 @@ func TestRunApp_RefactorAfterTestsPassOnGreen(t *testing.T) {
 	Scenario{
 		Steps: []Step{
 			{
-				Input: "write a test",
+				Sensei: "Describe the failing test",
+				Input:  "write a test",
 				Commands: []app.CommandExpected{
 					{Command: claudeCmd("red.tmpl", "write a test")},
 					{Command: "dotnet test", Mock: app.NewErrorResponse()},
@@ -79,12 +101,17 @@ func TestRunApp_RefactorAfterTestsPassOnGreen(t *testing.T) {
 				ExpectPhase: tdd.Green,
 			},
 			{
-				Input: "pass the test",
+				Sensei: "How would you like to pass the test?",
+				Input:  "pass the test",
 				Commands: []app.CommandExpected{
 					{Command: claudeCmd("green.tmpl", "pass the test")},
 					{Command: "dotnet test"},
 				},
 				ExpectPhase: tdd.Refactor,
+			},
+			{
+				Sensei: "Specify design improvements",
+				Input:  "exit",
 			},
 		},
 	}.Run(t)
@@ -94,7 +121,8 @@ func TestRunApp_RefactorStaysOnRefactorUnlessUserExplicitySelectsNext(t *testing
 	Scenario{
 		Steps: []Step{
 			{
-				Input: "write a test",
+				Sensei: "Describe the failing test",
+				Input:  "write a test",
 				Commands: []app.CommandExpected{
 					{Command: claudeCmd("red.tmpl", "write a test")},
 					{Command: "dotnet test", Mock: app.NewErrorResponse()},
@@ -102,7 +130,8 @@ func TestRunApp_RefactorStaysOnRefactorUnlessUserExplicitySelectsNext(t *testing
 				ExpectPhase: tdd.Green,
 			},
 			{
-				Input: "pass the test",
+				Sensei: "How would you like to pass the test?",
+				Input:  "pass the test",
 				Commands: []app.CommandExpected{
 					{Command: claudeCmd("green.tmpl", "pass the test")},
 					{Command: "dotnet test"},
@@ -110,7 +139,9 @@ func TestRunApp_RefactorStaysOnRefactorUnlessUserExplicitySelectsNext(t *testing
 				ExpectPhase: tdd.Refactor,
 			},
 			{
-				Input: "refactor the code",
+
+				Sensei: "Specify design improvements",
+				Input:  "refactor the code",
 				Commands: []app.CommandExpected{
 					{Command: claudeCmd("refactor.tmpl", "refactor the code")},
 					{Command: "dotnet test"},
@@ -120,6 +151,10 @@ func TestRunApp_RefactorStaysOnRefactorUnlessUserExplicitySelectsNext(t *testing
 			{
 				Input:       "next",
 				ExpectPhase: tdd.Red,
+			},
+			{
+				Sensei: "Describe the failing test",
+				Input:  "exit",
 			},
 		},
 	}.Run(t)
@@ -131,12 +166,17 @@ func TestRunApp_ModelAndEffortShouldReflectInClaudeCommand(t *testing.T) {
 		Effort: "low",
 		Steps: []Step{
 			{
-				Input: "write a test",
+				Sensei: "Describe the failing test",
+				Input:  "write a test",
 				Commands: []app.CommandExpected{
 					{Command: claudeCmdWithModelAndEffort("red.tmpl", "write a test", "sonnet", "low")},
 					{Command: "dotnet test", Mock: app.NewErrorResponse()},
 				},
 				ExpectPhase: tdd.Green,
+			},
+			{
+				Sensei: "How would you like to pass the test?",
+				Input:  "exit",
 			},
 		},
 	}.Run(t)

@@ -9,6 +9,7 @@ import (
 )
 
 type Step struct {
+	Sensei      string
 	Input       string
 	Commands    []app.CommandExpected
 	ExpectPhase tdd.Phase
@@ -48,9 +49,17 @@ func (scenario *Scenario) Phases() []tdd.Phase {
 	return phases
 }
 
+func (scenario *Scenario) SenseiSaid() []string {
+	var senseiSaid []string
+	for _, step := range scenario.Steps {
+		senseiSaid = append(senseiSaid, step.Sensei)
+	}
+	return senseiSaid
+}
+
 func (scenario Scenario) Run(t *testing.T) {
-	input := strings.NewReader(scenario.NewlineSeperatedInputs() + "exit\n")
-	userInterface := ui.NewTestUI(input)
+	input := strings.NewReader(scenario.NewlineSeperatedInputs())
+	userInterface := ui.NewTestUI(input, t, scenario.SenseiSaid())
 	commandRunner := app.NewTestCommandRunner(t, scenario.Commands())
 	tdd := tdd.NewTestTDDPhase(t, scenario.Phases())
 
