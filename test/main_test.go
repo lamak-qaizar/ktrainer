@@ -179,3 +179,56 @@ func TestRunApp_ModelAndEffortShouldReflectInClaudeCommand(t *testing.T) {
 		},
 	}.Run(t)
 }
+
+func TestRunApp_FirstPromptShouldBeMoreDescriptive(t *testing.T) {
+	Scenario{
+		Steps: []Step{
+			{
+				Sensei: "Describe the first failing test.\n\nTests are declarative: they describe the 'what'. Usually in the form of GWT (given, when, then).",
+				Input:  "write a test",
+				Commands: []app.CommandExpected{
+					{Command: claudeCmd("red.tmpl", "write a test")},
+					{Command: "dotnet test", Mock: app.NewErrorResponse()},
+				},
+				ExpectPhase: tdd.Green,
+			},
+			{
+				Sensei: "How would you like to pass the test?",
+				Input:  "pass the test",
+				Commands: []app.CommandExpected{
+					{Command: claudeCmd("green.tmpl", "pass the test")},
+					{Command: "dotnet test"},
+				},
+				ExpectPhase: tdd.Refactor,
+			},
+			{
+
+				Sensei:      "Specify design improvements",
+				Input:       "next",
+				ExpectPhase: tdd.Red,
+			},
+			{
+				Sensei: "Describe the failing test to write.",
+				Input:  "write a test",
+				Commands: []app.CommandExpected{
+					{Command: claudeCmd("red.tmpl", "write a test")},
+					{Command: "dotnet test", Mock: app.NewErrorResponse()},
+				},
+				ExpectPhase: tdd.Green,
+			},
+			{
+				Sensei: "How would you like to pass the test?",
+				Input:  "pass the test",
+				Commands: []app.CommandExpected{
+					{Command: claudeCmd("green.tmpl", "pass the test")},
+					{Command: "dotnet test"},
+				},
+				ExpectPhase: tdd.Refactor,
+			},
+			{
+				Sensei: "Specify design improvements",
+				Input:  "exit",
+			},
+		},
+	}.Run(t)
+}
