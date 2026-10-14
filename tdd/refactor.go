@@ -5,6 +5,7 @@ import (
 )
 
 type RefactorState struct {
+	First    bool
 	Advanced bool
 }
 
@@ -25,8 +26,14 @@ func (refacor *RefactorState) ForceAdvance() TDDPhase {
 }
 
 func (refactor *RefactorState) PrintInstructions(userInterface ui.UserInterface) {
-	instructions(userInterface, refactor.Phase().String(), ui.YELLOW,
-		"Specify design improvements, or type 'next'.", refactor.Advanced)
+	if refactor.First {
+		instructions(userInterface, refactor.Phase().String(), ui.YELLOW,
+			"Remove duplication. Clean up code smells in tests and implementation.\n\nHowever, there isn't anything to improve right now. Type 'next'.", refactor.Advanced)
+
+	} else {
+		instructions(userInterface, refactor.Phase().String(), ui.YELLOW,
+			"Specify design improvements, or type 'next'.", refactor.Advanced)
+	}
 }
 
 func (red *RefactorState) NoAdvance() TDDPhase {

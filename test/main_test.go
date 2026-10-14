@@ -108,7 +108,7 @@ func TestRunApp_RefactorAfterTestsPassOnGreen(t *testing.T) {
 				ExpectPhase: tdd.Refactor,
 			},
 			{
-				Sensei: "Specify design improvements",
+				Sensei: "Remove duplication. Clean up code smells in tests and implementation.\n\nHowever, there isn't anything to improve right now. Type 'next'.",
 				Input:  "exit",
 			},
 		},
@@ -138,7 +138,7 @@ func TestRunApp_RefactorStaysOnRefactorUnlessUserExplicitySelectsNext(t *testing
 			},
 			{
 
-				Sensei: "Specify design improvements",
+				Sensei: "Remove duplication. Clean up code smells in tests and implementation.\n\nHowever, there isn't anything to improve right now. Type 'next'.",
 				Input:  "refactor the code",
 				Commands: []app.CommandExpected{
 					{Command: claudeCmd("refactor.tmpl", "refactor the code")},
@@ -203,7 +203,7 @@ func TestRunApp_FirstPromptShouldBeMoreDescriptive(t *testing.T) {
 			},
 			{
 
-				Sensei:      "Specify design improvements",
+				Sensei:      "Remove duplication. Clean up code smells in tests and implementation.\n\nHowever, there isn't anything to improve right now. Type 'next'.",
 				Input:       "next",
 				ExpectPhase: tdd.Red,
 			},
