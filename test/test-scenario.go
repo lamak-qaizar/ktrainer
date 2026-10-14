@@ -52,7 +52,9 @@ func (scenario *Scenario) Phases() []tdd.Phase {
 func (scenario *Scenario) SenseiSaid() []string {
 	var senseiSaid []string
 	for _, step := range scenario.Steps {
-		senseiSaid = append(senseiSaid, step.Sensei)
+		if step.Sensei != "" {
+			senseiSaid = append(senseiSaid, step.Sensei)
+		}
 	}
 	return senseiSaid
 }
@@ -67,4 +69,6 @@ func (scenario Scenario) Run(t *testing.T) {
 	app.NewAppRunner(*kata, userInterface,
 		app.NewClaudeCLIAssistant(app.ConfigWithModelAndEffort(scenario.Model, scenario.Effort), commandRunner),
 		app.NewDotnetTestRunner(userInterface.Writer(), commandRunner)).Run(tdd)
+
+	userInterface.VerifyAllReceived()
 }

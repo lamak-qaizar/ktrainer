@@ -106,3 +106,9 @@ func (ui *TestUI) SenseiSays(str string) {
 
 	ui.pos++
 }
+
+func (ui *TestUI) VerifyAllReceived() {
+	if ui.pos < len(ui.senseiSaid) {
+		ui.t.Fatalf("Sensei did not say that was expected to be said.")
+	}
+}

@@ -62,8 +62,7 @@ func TestRunApp_StayOnRedWhenTestPasses(t *testing.T) {
 				ExpectPhase: tdd.Red,
 			},
 			{
-				Sensei: "Describe the failing test",
-				Input:  "exit",
+				Input: "exit",
 			},
 		},
 	}.Run(t)
@@ -81,8 +80,7 @@ func TestRunApp_StayOnRedWhenClaudeRejectsPrompt(t *testing.T) {
 				ExpectPhase: tdd.Red,
 			},
 			{
-				Sensei: "Describe the failing test",
-				Input:  "exit",
+				Input: "exit",
 			},
 		},
 	}.Run(t)
