@@ -18,7 +18,7 @@ func (red *RedState) Advance(testsPassed bool) TDDPhase {
 		return red.NoAdvance()
 	}
 
-	return &GreenState{Advanced: true}
+	return &GreenState{Advanced: true, First: red.First}
 }
 
 func (red *RedState) Prompt(userInput string) string {
@@ -26,7 +26,7 @@ func (red *RedState) Prompt(userInput string) string {
 }
 
 func (red *RedState) ForceAdvance() TDDPhase {
-	return &GreenState{Advanced: true}
+	return &GreenState{Advanced: true, First: red.First}
 }
 
 func (red *RedState) PrintInstructions(userInterface ui.UserInterface) {

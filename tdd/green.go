@@ -5,6 +5,7 @@ import (
 )
 
 type GreenState struct {
+	First    bool
 	Advanced bool
 }
 
@@ -29,8 +30,13 @@ func (green *GreenState) ForceAdvance() TDDPhase {
 }
 
 func (green *GreenState) PrintInstructions(userInterface ui.UserInterface) {
-	instructions(userInterface, green.Phase().String(), ui.GREEN,
-		"How would you like to pass the test? Provide the simplest solution possible.", green.Advanced)
+	if green.First {
+		instructions(userInterface, green.Phase().String(), ui.GREEN,
+			"Specify the simplest solution possible to pass the test.\n\nIf the test can be passed by returning a constant value, do that.", green.Advanced)
+	} else {
+		instructions(userInterface, green.Phase().String(), ui.GREEN,
+			"How would you like to pass the test?", green.Advanced)
+	}
 }
 
 func (red *GreenState) NoAdvance() TDDPhase {
