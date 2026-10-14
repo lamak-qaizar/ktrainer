@@ -22,7 +22,7 @@ func TestRunApp_QuitExitsCleanly(t *testing.T) {
 	Scenario{
 		Steps: []Step{
 			{
-				Sensei: "Describe the failing test to write.",
+				Sensei: "Describe the first failing test.\n\nTests are declarative: they describe the 'what'. Usually in the form of GWT (given, when, then).",
 				Input:  "exit",
 			},
 		},
@@ -33,7 +33,7 @@ func TestRunApp_RedToGreenWhenTestFails(t *testing.T) {
 	Scenario{
 		Steps: []Step{
 			{
-				Sensei: "Describe the failing test to write.",
+				Sensei: "Describe the first failing test.\n\nTests are declarative: they describe the 'what'. Usually in the form of GWT (given, when, then).",
 				Input:  "write a test",
 				Commands: []app.CommandExpected{
 					{Command: claudeCmd("red.tmpl", "write a test")},
@@ -53,7 +53,7 @@ func TestRunApp_StayOnRedWhenTestPasses(t *testing.T) {
 	Scenario{
 		Steps: []Step{
 			{
-				Sensei: "Describe the failing test to write.",
+				Sensei: "Describe the first failing test.\n\nTests are declarative: they describe the 'what'. Usually in the form of GWT (given, when, then).",
 				Input:  "write a test",
 				Commands: []app.CommandExpected{
 					{Command: claudeCmd("red.tmpl", "write a test")},
@@ -72,7 +72,7 @@ func TestRunApp_StayOnRedWhenClaudeRejectsPrompt(t *testing.T) {
 	Scenario{
 		Steps: []Step{
 			{
-				Sensei: "Describe the failing test to write.",
+				Sensei: "Describe the first failing test.\n\nTests are declarative: they describe the 'what'. Usually in the form of GWT (given, when, then).",
 				Input:  "write all tests",
 				Commands: []app.CommandExpected{
 					{Command: claudeCmd("red.tmpl", "write all tests"), Mock: app.MockResponse{Output: "REJECTED: write one test only"}},
@@ -90,7 +90,7 @@ func TestRunApp_RefactorAfterTestsPassOnGreen(t *testing.T) {
 	Scenario{
 		Steps: []Step{
 			{
-				Sensei: "Describe the failing test to write.",
+				Sensei: "Describe the first failing test.\n\nTests are declarative: they describe the 'what'. Usually in the form of GWT (given, when, then).",
 				Input:  "write a test",
 				Commands: []app.CommandExpected{
 					{Command: claudeCmd("red.tmpl", "write a test")},
@@ -119,7 +119,7 @@ func TestRunApp_RefactorStaysOnRefactorUnlessUserExplicitySelectsNext(t *testing
 	Scenario{
 		Steps: []Step{
 			{
-				Sensei: "Describe the failing test to write.",
+				Sensei: "Describe the first failing test.\n\nTests are declarative: they describe the 'what'. Usually in the form of GWT (given, when, then).",
 				Input:  "write a test",
 				Commands: []app.CommandExpected{
 					{Command: claudeCmd("red.tmpl", "write a test")},
@@ -164,7 +164,7 @@ func TestRunApp_ModelAndEffortShouldReflectInClaudeCommand(t *testing.T) {
 		Effort: "low",
 		Steps: []Step{
 			{
-				Sensei: "Describe the failing test to write.",
+				Sensei: "Describe the first failing test.\n\nTests are declarative: they describe the 'what'. Usually in the form of GWT (given, when, then).",
 				Input:  "write a test",
 				Commands: []app.CommandExpected{
 					{Command: claudeCmdWithModelAndEffort("red.tmpl", "write a test", "sonnet", "low")},

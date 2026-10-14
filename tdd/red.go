@@ -5,6 +5,7 @@ import (
 )
 
 type RedState struct {
+	First    bool
 	Advanced bool
 }
 
@@ -29,8 +30,13 @@ func (red *RedState) ForceAdvance() TDDPhase {
 }
 
 func (red *RedState) PrintInstructions(userInterface ui.UserInterface) {
-	instructions(userInterface, red.Phase().String(), ui.RED,
-		"Describe the failing test to write.", red.Advanced)
+	if red.First {
+		instructions(userInterface, red.Phase().String(), ui.RED,
+			"Describe the first failing test.\n\nTests are declarative: they describe the 'what'. Usually in the form of GWT (given, when, then).", red.Advanced)
+	} else {
+		instructions(userInterface, red.Phase().String(), ui.RED,
+			"Describe the failing test to write.", red.Advanced)
+	}
 }
 
 func (red *RedState) NoAdvance() TDDPhase {
