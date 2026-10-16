@@ -39,7 +39,7 @@ func TestRunApp_RedToGreenWhenTestFails(t *testing.T) {
 					{Command: claudeCmd("red.tmpl", "write a test")},
 					{Command: "dotnet test", Mock: app.NewErrorResponse()},
 				},
-				ExpectPhase: tdd.Green,
+				ExpectPhase: tdd.Transition{Current: tdd.Red, Next: tdd.Green},
 			},
 			{
 				Sensei: "Specify the simplest solution possible to pass the test.\n\nIf the test can be passed by returning a constant value, do that. To generalise the solution, write more tests.",
@@ -59,7 +59,7 @@ func TestRunApp_StayOnRedWhenTestPasses(t *testing.T) {
 					{Command: claudeCmd("red.tmpl", "write a test")},
 					{Command: "dotnet test"},
 				},
-				ExpectPhase: tdd.Red,
+				ExpectPhase: tdd.Transition{Current: tdd.Red, Next: tdd.Red},
 			},
 			{
 				Input: "exit",
@@ -77,7 +77,7 @@ func TestRunApp_StayOnRedWhenClaudeRejectsPrompt(t *testing.T) {
 				Commands: []app.CommandExpected{
 					{Command: claudeCmd("red.tmpl", "write all tests"), Mock: app.MockResponse{Output: "REJECTED: write one test only"}},
 				},
-				ExpectPhase: tdd.Red,
+				ExpectPhase: tdd.Transition{Current: tdd.Red, Next: tdd.Green},
 			},
 			{
 				Input: "exit",
@@ -96,7 +96,7 @@ func TestRunApp_RefactorAfterTestsPassOnGreen(t *testing.T) {
 					{Command: claudeCmd("red.tmpl", "write a test")},
 					{Command: "dotnet test", Mock: app.NewErrorResponse()},
 				},
-				ExpectPhase: tdd.Green,
+				ExpectPhase: tdd.Transition{Current: tdd.Red, Next: tdd.Green},
 			},
 			{
 				Sensei: "Specify the simplest solution possible to pass the test.\n\nIf the test can be passed by returning a constant value, do that. To generalise the solution, write more tests.",
@@ -105,7 +105,7 @@ func TestRunApp_RefactorAfterTestsPassOnGreen(t *testing.T) {
 					{Command: claudeCmd("green.tmpl", "pass the test")},
 					{Command: "dotnet test"},
 				},
-				ExpectPhase: tdd.Refactor,
+				ExpectPhase: tdd.Transition{Current: tdd.Green, Next: tdd.Refactor},
 			},
 			{
 				Sensei: "Remove duplication. Clean up code smells in tests and implementation.\n\nHowever, there isn't anything to improve right now. Type 'next'.",
@@ -125,7 +125,7 @@ func TestRunApp_RefactorStaysOnRefactorUnlessUserExplicitySelectsNext(t *testing
 					{Command: claudeCmd("red.tmpl", "write a test")},
 					{Command: "dotnet test", Mock: app.NewErrorResponse()},
 				},
-				ExpectPhase: tdd.Green,
+				ExpectPhase: tdd.Transition{Current: tdd.Red, Next: tdd.Green},
 			},
 			{
 				Sensei: "Specify the simplest solution possible to pass the test.\n\nIf the test can be passed by returning a constant value, do that. To generalise the solution, write more tests.",
@@ -134,7 +134,7 @@ func TestRunApp_RefactorStaysOnRefactorUnlessUserExplicitySelectsNext(t *testing
 					{Command: claudeCmd("green.tmpl", "pass the test")},
 					{Command: "dotnet test"},
 				},
-				ExpectPhase: tdd.Refactor,
+				ExpectPhase: tdd.Transition{Current: tdd.Green, Next: tdd.Refactor},
 			},
 			{
 
@@ -144,11 +144,11 @@ func TestRunApp_RefactorStaysOnRefactorUnlessUserExplicitySelectsNext(t *testing
 					{Command: claudeCmd("refactor.tmpl", "refactor the code")},
 					{Command: "dotnet test"},
 				},
-				ExpectPhase: tdd.Refactor,
+				ExpectPhase: tdd.Transition{Current: tdd.Refactor, Next: tdd.Refactor},
 			},
 			{
 				Input:       "next",
-				ExpectPhase: tdd.Red,
+				ExpectPhase: tdd.Transition{Current: tdd.Refactor, Next: tdd.Red},
 			},
 			{
 				Sensei: "Describe the failing test to write.",
@@ -170,7 +170,7 @@ func TestRunApp_ModelAndEffortShouldReflectInClaudeCommand(t *testing.T) {
 					{Command: claudeCmdWithModelAndEffort("red.tmpl", "write a test", "sonnet", "low")},
 					{Command: "dotnet test", Mock: app.NewErrorResponse()},
 				},
-				ExpectPhase: tdd.Green,
+				ExpectPhase: tdd.Transition{Current: tdd.Red, Next: tdd.Green},
 			},
 			{
 				Sensei: "Specify the simplest solution possible to pass the test.\n\nIf the test can be passed by returning a constant value, do that. To generalise the solution, write more tests.",
@@ -190,7 +190,7 @@ func TestRunApp_FirstPromptShouldBeMoreDescriptive(t *testing.T) {
 					{Command: claudeCmd("red.tmpl", "write a test")},
 					{Command: "dotnet test", Mock: app.NewErrorResponse()},
 				},
-				ExpectPhase: tdd.Green,
+				ExpectPhase: tdd.Transition{Current: tdd.Red, Next: tdd.Green},
 			},
 			{
 				Sensei: "Specify the simplest solution possible to pass the test.\n\nIf the test can be passed by returning a constant value, do that. To generalise the solution, write more tests.",
@@ -199,13 +199,13 @@ func TestRunApp_FirstPromptShouldBeMoreDescriptive(t *testing.T) {
 					{Command: claudeCmd("green.tmpl", "pass the test")},
 					{Command: "dotnet test"},
 				},
-				ExpectPhase: tdd.Refactor,
+				ExpectPhase: tdd.Transition{Current: tdd.Green, Next: tdd.Refactor},
 			},
 			{
 
 				Sensei:      "Remove duplication. Clean up code smells in tests and implementation.\n\nHowever, there isn't anything to improve right now. Type 'next'.",
 				Input:       "next",
-				ExpectPhase: tdd.Red,
+				ExpectPhase: tdd.Transition{Current: tdd.Refactor, Next: tdd.Red},
 			},
 			{
 				Sensei: "Describe the failing test to write.",
@@ -214,7 +214,7 @@ func TestRunApp_FirstPromptShouldBeMoreDescriptive(t *testing.T) {
 					{Command: claudeCmd("red.tmpl", "write a test")},
 					{Command: "dotnet test", Mock: app.NewErrorResponse()},
 				},
-				ExpectPhase: tdd.Green,
+				ExpectPhase: tdd.Transition{Current: tdd.Red, Next: tdd.Green},
 			},
 			{
 				Sensei: "How would you like to pass the test?",
@@ -223,7 +223,7 @@ func TestRunApp_FirstPromptShouldBeMoreDescriptive(t *testing.T) {
 					{Command: claudeCmd("green.tmpl", "pass the test")},
 					{Command: "dotnet test"},
 				},
-				ExpectPhase: tdd.Refactor,
+				ExpectPhase: tdd.Transition{Current: tdd.Green, Next: tdd.Refactor},
 			},
 			{
 				Sensei: "Specify design improvements",
@@ -243,7 +243,7 @@ func TestRunApp_FirstPromptShouldBeMoreDescriptivev2(t *testing.T) {
 					{Command: claudeCmd("red.tmpl", "write a test")},
 					{Command: "dotnet test"},
 				},
-				ExpectPhase: tdd.Red,
+				ExpectPhase: tdd.Transition{Current: tdd.Red, Next: tdd.Red},
 			},
 			{
 				Input: "write a test",
@@ -251,7 +251,7 @@ func TestRunApp_FirstPromptShouldBeMoreDescriptivev2(t *testing.T) {
 					{Command: claudeCmd("red.tmpl", "write a test")},
 					{Command: "dotnet test", Mock: app.NewErrorResponse()},
 				},
-				ExpectPhase: tdd.Green,
+				ExpectPhase: tdd.Transition{Current: tdd.Red, Next: tdd.Green},
 			},
 			{
 				Sensei: "Specify the simplest solution possible to pass the test.\n\nIf the test can be passed by returning a constant value, do that. To generalise the solution, write more tests.",
@@ -260,7 +260,7 @@ func TestRunApp_FirstPromptShouldBeMoreDescriptivev2(t *testing.T) {
 					{Command: claudeCmd("green.tmpl", "pass the test")},
 					{Command: "dotnet test", Mock: app.NewErrorResponse()},
 				},
-				ExpectPhase: tdd.Green,
+				ExpectPhase: tdd.Transition{Current: tdd.Green, Next: tdd.Green},
 			},
 			{
 				Input: "pass the test",
@@ -268,12 +268,12 @@ func TestRunApp_FirstPromptShouldBeMoreDescriptivev2(t *testing.T) {
 					{Command: claudeCmd("green.tmpl", "pass the test")},
 					{Command: "dotnet test"},
 				},
-				ExpectPhase: tdd.Refactor,
+				ExpectPhase: tdd.Transition{Current: tdd.Green, Next: tdd.Refactor},
 			},
 			{
 				Sensei:      "Remove duplication. Clean up code smells in tests and implementation.\n\nHowever, there isn't anything to improve right now. Type 'next'.",
 				Input:       "next",
-				ExpectPhase: tdd.Red,
+				ExpectPhase: tdd.Transition{Current: tdd.Red, Next: tdd.Green},
 			},
 			{
 				Sensei: "Describe the failing test to write.",
@@ -282,7 +282,7 @@ func TestRunApp_FirstPromptShouldBeMoreDescriptivev2(t *testing.T) {
 					{Command: claudeCmd("red.tmpl", "write a test")},
 					{Command: "dotnet test", Mock: app.NewErrorResponse()},
 				},
-				ExpectPhase: tdd.Green,
+				ExpectPhase: tdd.Transition{Current: tdd.Green, Next: tdd.Green},
 			},
 			{
 				Sensei: "How would you like to pass the test?",
@@ -291,7 +291,7 @@ func TestRunApp_FirstPromptShouldBeMoreDescriptivev2(t *testing.T) {
 					{Command: claudeCmd("green.tmpl", "pass the test")},
 					{Command: "dotnet test"},
 				},
-				ExpectPhase: tdd.Refactor,
+				ExpectPhase: tdd.Transition{Current: tdd.Green, Next: tdd.Refactor},
 			},
 			{
 				Sensei: "Specify design improvements",

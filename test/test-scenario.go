@@ -12,7 +12,7 @@ type Step struct {
 	Sensei      string
 	Input       string
 	Commands    []app.CommandExpected
-	ExpectPhase tdd.Phase
+	ExpectPhase tdd.Transition
 }
 
 type Scenario struct {
@@ -41,12 +41,12 @@ func (scenario *Scenario) Commands() []app.CommandExpected {
 	return commands
 }
 
-func (scenario *Scenario) Phases() []tdd.Phase {
-	var phases []tdd.Phase
+func (scenario *Scenario) Phases() []tdd.Transition {
+	var transitions []tdd.Transition
 	for _, step := range scenario.Steps {
-		phases = append(phases, step.ExpectPhase)
+		transitions = append(transitions, step.ExpectPhase)
 	}
-	return phases
+	return transitions
 }
 
 func (scenario *Scenario) SenseiSaid() []string {
