@@ -40,5 +40,5 @@ func (red *RedState) PrintInstructions(userInterface ui.UserInterface) {
 }
 
 func (red *RedState) NoAdvance() TDDPhase {
-	return &RedState{}
+	return &RedState{First: red.First}
 }

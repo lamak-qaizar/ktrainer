@@ -39,6 +39,6 @@ func (green *GreenState) PrintInstructions(userInterface ui.UserInterface) {
 	}
 }
 
-func (red *GreenState) NoAdvance() TDDPhase {
-	return &GreenState{}
+func (green *GreenState) NoAdvance() TDDPhase {
+	return &GreenState{First: green.First}
 }
