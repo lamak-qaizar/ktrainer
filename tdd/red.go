@@ -28,9 +28,9 @@ func (red *RedState) Prompt(userInput string) string {
 func (red *RedState) PrintInstructions(userInterface ui.UserInterface) {
 	if red.First {
 		instructions(userInterface, red.Phase().String(), ui.RED,
-			"Describe the first failing test. Tests are declarative: they describe the 'what'. Usually in the form of GWT (given, when, then).", red.Advanced)
+			"Describe the first failing test. Tests are declarative: they describe the 'what', usually in the form of GWT (given, when, then).", red.Advanced)
 	} else {
 		instructions(userInterface, red.Phase().String(), ui.RED,
-			"Describe the failing test to write.", red.Advanced)
+			"Describe the next failing test to write.", red.Advanced)
 	}
 }

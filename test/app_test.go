@@ -22,7 +22,7 @@ func TestRunApp_QuitExitsCleanly(t *testing.T) {
 	Scenario{
 		Steps: []Step{
 			{
-				Sensei: "Describe the first failing test. Tests are declarative: they describe the 'what'. Usually in the form of GWT (given, when, then).",
+				Sensei: "Describe the first failing test. Tests are declarative: they describe the 'what', usually in the form of GWT (given, when, then).",
 				Input:  "exit",
 			},
 		},
@@ -33,7 +33,7 @@ func TestRunApp_RedToGreenWhenTestFails(t *testing.T) {
 	Scenario{
 		Steps: []Step{
 			{
-				Sensei: "Describe the first failing test. Tests are declarative: they describe the 'what'. Usually in the form of GWT (given, when, then).",
+				Sensei: "Describe the first failing test. Tests are declarative: they describe the 'what', usually in the form of GWT (given, when, then).",
 				Input:  "write a test",
 				Commands: []app.CommandExpected{
 					{Command: claudeCmd("red.tmpl", "write a test")},
@@ -42,7 +42,7 @@ func TestRunApp_RedToGreenWhenTestFails(t *testing.T) {
 				ExpectPhase: tdd.Transition{Current: tdd.Red, Next: tdd.Green},
 			},
 			{
-				Sensei: "Congratulations! We have our first failing test. Specify the simplest solution possible to pass the test: if the test can be passed by returning a constant value, do that. To generalise the solution, write more tests.",
+				Sensei: "Congratulations! We have our first failing test. Specify the simplest solution to pass the test e.g. if the test can be passed by returning a constant, do that. To generalise the solution, write more tests.",
 				Input:  "exit",
 			},
 		},
@@ -53,7 +53,7 @@ func TestRunApp_StayOnRedWhenTestPasses(t *testing.T) {
 	Scenario{
 		Steps: []Step{
 			{
-				Sensei: "Describe the first failing test. Tests are declarative: they describe the 'what'. Usually in the form of GWT (given, when, then).",
+				Sensei: "Describe the first failing test. Tests are declarative: they describe the 'what', usually in the form of GWT (given, when, then).",
 				Input:  "write a test",
 				Commands: []app.CommandExpected{
 					{Command: claudeCmd("red.tmpl", "write a test")},
@@ -72,7 +72,7 @@ func TestRunApp_StayOnRedWhenClaudeRejectsPrompt(t *testing.T) {
 	Scenario{
 		Steps: []Step{
 			{
-				Sensei: "Describe the first failing test. Tests are declarative: they describe the 'what'. Usually in the form of GWT (given, when, then).",
+				Sensei: "Describe the first failing test. Tests are declarative: they describe the 'what', usually in the form of GWT (given, when, then).",
 				Input:  "write all tests",
 				Commands: []app.CommandExpected{
 					{Command: claudeCmd("red.tmpl", "write all tests"), Mock: app.MockResponse{Output: "REJECTED: write one test only"}},
@@ -90,7 +90,7 @@ func TestRunApp_RefactorAfterTestsPassOnGreen(t *testing.T) {
 	Scenario{
 		Steps: []Step{
 			{
-				Sensei: "Describe the first failing test. Tests are declarative: they describe the 'what'. Usually in the form of GWT (given, when, then).",
+				Sensei: "Describe the first failing test. Tests are declarative: they describe the 'what', usually in the form of GWT (given, when, then).",
 				Input:  "write a test",
 				Commands: []app.CommandExpected{
 					{Command: claudeCmd("red.tmpl", "write a test")},
@@ -99,7 +99,7 @@ func TestRunApp_RefactorAfterTestsPassOnGreen(t *testing.T) {
 				ExpectPhase: tdd.Transition{Current: tdd.Red, Next: tdd.Green},
 			},
 			{
-				Sensei: "Congratulations! We have our first failing test. Specify the simplest solution possible to pass the test: if the test can be passed by returning a constant value, do that. To generalise the solution, write more tests.",
+				Sensei: "Congratulations! We have our first failing test. Specify the simplest solution to pass the test e.g. if the test can be passed by returning a constant, do that. To generalise the solution, write more tests.",
 				Input:  "pass the test",
 				Commands: []app.CommandExpected{
 					{Command: claudeCmd("green.tmpl", "pass the test")},
@@ -108,7 +108,7 @@ func TestRunApp_RefactorAfterTestsPassOnGreen(t *testing.T) {
 				ExpectPhase: tdd.Transition{Current: tdd.Green, Next: tdd.Refactor},
 			},
 			{
-				Sensei: "Remove duplication. Clean up code smells in tests and implementation. However, there isn't anything to improve right now. Type 'next'.",
+				Sensei: "Remove duplication. Clean up code smells. However, there isn't anything to improve right now. Type 'next'.",
 				Input:  "exit",
 			},
 		},
@@ -119,7 +119,7 @@ func TestRunApp_RefactorStaysOnRefactorUnlessUserExplicitySelectsNext(t *testing
 	Scenario{
 		Steps: []Step{
 			{
-				Sensei: "Describe the first failing test. Tests are declarative: they describe the 'what'. Usually in the form of GWT (given, when, then).",
+				Sensei: "Describe the first failing test. Tests are declarative: they describe the 'what', usually in the form of GWT (given, when, then).",
 				Input:  "write a test",
 				Commands: []app.CommandExpected{
 					{Command: claudeCmd("red.tmpl", "write a test")},
@@ -128,7 +128,7 @@ func TestRunApp_RefactorStaysOnRefactorUnlessUserExplicitySelectsNext(t *testing
 				ExpectPhase: tdd.Transition{Current: tdd.Red, Next: tdd.Green},
 			},
 			{
-				Sensei: "Congratulations! We have our first failing test. Specify the simplest solution possible to pass the test: if the test can be passed by returning a constant value, do that. To generalise the solution, write more tests.",
+				Sensei: "Congratulations! We have our first failing test. Specify the simplest solution to pass the test e.g. if the test can be passed by returning a constant, do that. To generalise the solution, write more tests.",
 				Input:  "pass the test",
 				Commands: []app.CommandExpected{
 					{Command: claudeCmd("green.tmpl", "pass the test")},
@@ -138,7 +138,7 @@ func TestRunApp_RefactorStaysOnRefactorUnlessUserExplicitySelectsNext(t *testing
 			},
 			{
 
-				Sensei: "Remove duplication. Clean up code smells in tests and implementation. However, there isn't anything to improve right now. Type 'next'.",
+				Sensei: "Remove duplication. Clean up code smells. However, there isn't anything to improve right now. Type 'next'.",
 				Input:  "refactor the code",
 				Commands: []app.CommandExpected{
 					{Command: claudeCmd("refactor.tmpl", "refactor the code")},
@@ -151,7 +151,7 @@ func TestRunApp_RefactorStaysOnRefactorUnlessUserExplicitySelectsNext(t *testing
 				ExpectPhase: tdd.Transition{Current: tdd.Refactor, Next: tdd.Red},
 			},
 			{
-				Sensei: "Describe the failing test to write.",
+				Sensei: "Describe the next failing test to write.",
 				Input:  "exit",
 			},
 		},
@@ -164,7 +164,7 @@ func TestRunApp_ModelAndEffortShouldReflectInClaudeCommand(t *testing.T) {
 		Effort: "low",
 		Steps: []Step{
 			{
-				Sensei: "Describe the first failing test. Tests are declarative: they describe the 'what'. Usually in the form of GWT (given, when, then).",
+				Sensei: "Describe the first failing test. Tests are declarative: they describe the 'what', usually in the form of GWT (given, when, then).",
 				Input:  "write a test",
 				Commands: []app.CommandExpected{
 					{Command: claudeCmdWithModelAndEffort("red.tmpl", "write a test", "sonnet", "low")},
@@ -173,7 +173,7 @@ func TestRunApp_ModelAndEffortShouldReflectInClaudeCommand(t *testing.T) {
 				ExpectPhase: tdd.Transition{Current: tdd.Red, Next: tdd.Green},
 			},
 			{
-				Sensei: "Congratulations! We have our first failing test. Specify the simplest solution possible to pass the test: if the test can be passed by returning a constant value, do that. To generalise the solution, write more tests.",
+				Sensei: "Congratulations! We have our first failing test. Specify the simplest solution to pass the test e.g. if the test can be passed by returning a constant, do that. To generalise the solution, write more tests.",
 				Input:  "exit",
 			},
 		},
@@ -184,7 +184,7 @@ func TestRunApp_FirstPromptShouldBeMoreDescriptive(t *testing.T) {
 	Scenario{
 		Steps: []Step{
 			{
-				Sensei: "Describe the first failing test. Tests are declarative: they describe the 'what'. Usually in the form of GWT (given, when, then).",
+				Sensei: "Describe the first failing test. Tests are declarative: they describe the 'what', usually in the form of GWT (given, when, then).",
 				Input:  "write a test",
 				Commands: []app.CommandExpected{
 					{Command: claudeCmd("red.tmpl", "write a test")},
@@ -193,7 +193,7 @@ func TestRunApp_FirstPromptShouldBeMoreDescriptive(t *testing.T) {
 				ExpectPhase: tdd.Transition{Current: tdd.Red, Next: tdd.Green},
 			},
 			{
-				Sensei: "Congratulations! We have our first failing test. Specify the simplest solution possible to pass the test: if the test can be passed by returning a constant value, do that. To generalise the solution, write more tests.",
+				Sensei: "Congratulations! We have our first failing test. Specify the simplest solution to pass the test e.g. if the test can be passed by returning a constant, do that. To generalise the solution, write more tests.",
 				Input:  "pass the test",
 				Commands: []app.CommandExpected{
 					{Command: claudeCmd("green.tmpl", "pass the test")},
@@ -203,12 +203,12 @@ func TestRunApp_FirstPromptShouldBeMoreDescriptive(t *testing.T) {
 			},
 			{
 
-				Sensei:      "Remove duplication. Clean up code smells in tests and implementation. However, there isn't anything to improve right now. Type 'next'.",
+				Sensei:      "Remove duplication. Clean up code smells. However, there isn't anything to improve right now. Type 'next'.",
 				Input:       "next",
 				ExpectPhase: tdd.Transition{Current: tdd.Refactor, Next: tdd.Red},
 			},
 			{
-				Sensei: "Describe the failing test to write.",
+				Sensei: "Describe the next failing test to write.",
 				Input:  "write a test",
 				Commands: []app.CommandExpected{
 					{Command: claudeCmd("red.tmpl", "write a test")},
@@ -226,7 +226,7 @@ func TestRunApp_FirstPromptShouldBeMoreDescriptive(t *testing.T) {
 				ExpectPhase: tdd.Transition{Current: tdd.Green, Next: tdd.Refactor},
 			},
 			{
-				Sensei: "Specify design improvements",
+				Sensei: "Let's clean up tests and implementation, or type 'next'.",
 				Input:  "exit",
 			},
 		},
@@ -237,7 +237,7 @@ func TestRunApp_FirstPromptShouldBeMoreDescriptivev2(t *testing.T) {
 	Scenario{
 		Steps: []Step{
 			{
-				Sensei: "Describe the first failing test. Tests are declarative: they describe the 'what'. Usually in the form of GWT (given, when, then).",
+				Sensei: "Describe the first failing test. Tests are declarative: they describe the 'what', usually in the form of GWT (given, when, then).",
 				Input:  "write a test",
 				Commands: []app.CommandExpected{
 					{Command: claudeCmd("red.tmpl", "write a test")},
@@ -254,7 +254,7 @@ func TestRunApp_FirstPromptShouldBeMoreDescriptivev2(t *testing.T) {
 				ExpectPhase: tdd.Transition{Current: tdd.Red, Next: tdd.Green},
 			},
 			{
-				Sensei: "Congratulations! We have our first failing test. Specify the simplest solution possible to pass the test: if the test can be passed by returning a constant value, do that. To generalise the solution, write more tests.",
+				Sensei: "Congratulations! We have our first failing test. Specify the simplest solution to pass the test e.g. if the test can be passed by returning a constant, do that. To generalise the solution, write more tests.",
 				Input:  "pass the test",
 				Commands: []app.CommandExpected{
 					{Command: claudeCmd("green.tmpl", "pass the test")},
@@ -271,12 +271,12 @@ func TestRunApp_FirstPromptShouldBeMoreDescriptivev2(t *testing.T) {
 				ExpectPhase: tdd.Transition{Current: tdd.Green, Next: tdd.Refactor},
 			},
 			{
-				Sensei:      "Remove duplication. Clean up code smells in tests and implementation. However, there isn't anything to improve right now. Type 'next'.",
+				Sensei:      "Remove duplication. Clean up code smells. However, there isn't anything to improve right now. Type 'next'.",
 				Input:       "next",
 				ExpectPhase: tdd.Transition{Current: tdd.Refactor, Next: tdd.Red},
 			},
 			{
-				Sensei: "Describe the failing test to write.",
+				Sensei: "Describe the next failing test to write.",
 				Input:  "write a test",
 				Commands: []app.CommandExpected{
 					{Command: claudeCmd("red.tmpl", "write a test")},
@@ -294,7 +294,7 @@ func TestRunApp_FirstPromptShouldBeMoreDescriptivev2(t *testing.T) {
 				ExpectPhase: tdd.Transition{Current: tdd.Green, Next: tdd.Refactor},
 			},
 			{
-				Sensei: "Specify design improvements",
+				Sensei: "Let's clean up tests and implementation, or type 'next'.",
 				Input:  "exit",
 			},
 		},

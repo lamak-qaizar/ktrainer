@@ -32,7 +32,7 @@ func (green *GreenState) ForceAdvance() TDDPhase {
 func (green *GreenState) PrintInstructions(userInterface ui.UserInterface) {
 	if green.First {
 		instructions(userInterface, green.Phase().String(), ui.GREEN,
-			"Congratulations! We have our first failing test. Specify the simplest solution possible to pass the test: if the test can be passed by returning a constant value, do that. To generalise the solution, write more tests.", green.Advanced)
+			"Congratulations! We have our first failing test. Specify the simplest solution to pass the test e.g. if the test can be passed by returning a constant, do that. To generalise the solution, write more tests.", green.Advanced)
 	} else {
 		instructions(userInterface, green.Phase().String(), ui.GREEN,
 			"How would you like to pass the test?", green.Advanced)

@@ -32,10 +32,10 @@ func (refacor *RefactorState) ForceAdvance() TDDPhase {
 func (refactor *RefactorState) PrintInstructions(userInterface ui.UserInterface) {
 	if refactor.First {
 		instructions(userInterface, refactor.Phase().String(), ui.YELLOW,
-			"Remove duplication. Clean up code smells in tests and implementation. However, there isn't anything to improve right now. Type 'next'.", refactor.Advanced)
+			"Remove duplication. Clean up code smells. However, there isn't anything to improve right now. Type 'next'.", refactor.Advanced)
 
 	} else {
 		instructions(userInterface, refactor.Phase().String(), ui.YELLOW,
-			"Specify design improvements, or type 'next'.", refactor.Advanced)
+			"Let's clean up tests and implementation, or type 'next'.", refactor.Advanced)
 	}
 }
