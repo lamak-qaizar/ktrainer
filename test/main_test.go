@@ -42,7 +42,7 @@ func TestRunApp_RedToGreenWhenTestFails(t *testing.T) {
 				ExpectPhase: tdd.Transition{Current: tdd.Red, Next: tdd.Green},
 			},
 			{
-				Sensei: "Specify the simplest solution possible to pass the test.\n\nIf the test can be passed by returning a constant value, do that. To generalise the solution, write more tests.",
+				Sensei: "Congratulations! We have our first failing test.\n\nSpecify the simplest solution possible to pass the test: if the test can be passed by returning a constant value, do that. To generalise the solution, write more tests.",
 				Input:  "exit",
 			},
 		},
@@ -99,7 +99,7 @@ func TestRunApp_RefactorAfterTestsPassOnGreen(t *testing.T) {
 				ExpectPhase: tdd.Transition{Current: tdd.Red, Next: tdd.Green},
 			},
 			{
-				Sensei: "Specify the simplest solution possible to pass the test.\n\nIf the test can be passed by returning a constant value, do that. To generalise the solution, write more tests.",
+				Sensei: "Congratulations! We have our first failing test.\n\nSpecify the simplest solution possible to pass the test: if the test can be passed by returning a constant value, do that. To generalise the solution, write more tests.",
 				Input:  "pass the test",
 				Commands: []app.CommandExpected{
 					{Command: claudeCmd("green.tmpl", "pass the test")},
@@ -128,7 +128,7 @@ func TestRunApp_RefactorStaysOnRefactorUnlessUserExplicitySelectsNext(t *testing
 				ExpectPhase: tdd.Transition{Current: tdd.Red, Next: tdd.Green},
 			},
 			{
-				Sensei: "Specify the simplest solution possible to pass the test.\n\nIf the test can be passed by returning a constant value, do that. To generalise the solution, write more tests.",
+				Sensei: "Congratulations! We have our first failing test.\n\nSpecify the simplest solution possible to pass the test: if the test can be passed by returning a constant value, do that. To generalise the solution, write more tests.",
 				Input:  "pass the test",
 				Commands: []app.CommandExpected{
 					{Command: claudeCmd("green.tmpl", "pass the test")},
@@ -173,7 +173,7 @@ func TestRunApp_ModelAndEffortShouldReflectInClaudeCommand(t *testing.T) {
 				ExpectPhase: tdd.Transition{Current: tdd.Red, Next: tdd.Green},
 			},
 			{
-				Sensei: "Specify the simplest solution possible to pass the test.\n\nIf the test can be passed by returning a constant value, do that. To generalise the solution, write more tests.",
+				Sensei: "Congratulations! We have our first failing test.\n\nSpecify the simplest solution possible to pass the test: if the test can be passed by returning a constant value, do that. To generalise the solution, write more tests.",
 				Input:  "exit",
 			},
 		},
@@ -193,7 +193,7 @@ func TestRunApp_FirstPromptShouldBeMoreDescriptive(t *testing.T) {
 				ExpectPhase: tdd.Transition{Current: tdd.Red, Next: tdd.Green},
 			},
 			{
-				Sensei: "Specify the simplest solution possible to pass the test.\n\nIf the test can be passed by returning a constant value, do that. To generalise the solution, write more tests.",
+				Sensei: "Congratulations! We have our first failing test.\n\nSpecify the simplest solution possible to pass the test: if the test can be passed by returning a constant value, do that. To generalise the solution, write more tests.",
 				Input:  "pass the test",
 				Commands: []app.CommandExpected{
 					{Command: claudeCmd("green.tmpl", "pass the test")},
@@ -254,7 +254,7 @@ func TestRunApp_FirstPromptShouldBeMoreDescriptivev2(t *testing.T) {
 				ExpectPhase: tdd.Transition{Current: tdd.Red, Next: tdd.Green},
 			},
 			{
-				Sensei: "Specify the simplest solution possible to pass the test.\n\nIf the test can be passed by returning a constant value, do that. To generalise the solution, write more tests.",
+				Sensei: "Congratulations! We have our first failing test.\n\nSpecify the simplest solution possible to pass the test: if the test can be passed by returning a constant value, do that. To generalise the solution, write more tests.",
 				Input:  "pass the test",
 				Commands: []app.CommandExpected{
 					{Command: claudeCmd("green.tmpl", "pass the test")},
