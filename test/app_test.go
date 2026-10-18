@@ -233,7 +233,7 @@ func TestRunApp_FirstPromptShouldBeMoreDescriptive(t *testing.T) {
 	}.Run(t)
 }
 
-func TestRunApp_FirstPromptShouldBeMoreDescriptivev2(t *testing.T) {
+func TestRunApp_ShowFirstPromptEvenIfAPhaseRetries(t *testing.T) {
 	Scenario{
 		Steps: []Step{
 			{
