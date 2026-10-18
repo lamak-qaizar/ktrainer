@@ -36,7 +36,8 @@ func NewUI() *UI {
 }
 
 func (ui *UI) SenseiSays(str string) {
-	says := pterm.DefaultBox.WithHorizontalPadding(2).WithVerticalPadding(1).WithTitleTopCenter().WithTitle(pterm.Cyan(" sensei says ")).Sprint(str)
+	wrappedText := pterm.DefaultParagraph.WithMaxWidth(50).Sprint(str)
+	says := pterm.DefaultBox.WithHorizontalPadding(2).WithVerticalPadding(1).WithTitleTopCenter().WithTitle(pterm.Cyan(" sensei says ")).Sprint(wrappedText)
 	ui.Write("\n" + says + "\n")
 }
 
