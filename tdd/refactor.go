@@ -13,8 +13,12 @@ func (refactor *RefactorState) Phase() Phase {
 	return Refactor
 }
 
-func (refactor *RefactorState) Advance(testsPassed bool) TDDPhase {
-	return refactor.NoAdvance()
+func (refactor *RefactorState) Advance(event AdvanceEvent) TDDPhase {
+	if event == Stay {
+		return &RefactorState{}
+	}
+
+	return &RedState{Advanced: true}
 }
 
 func (refactor *RefactorState) Prompt(userInput string) string {
@@ -34,8 +38,4 @@ func (refactor *RefactorState) PrintInstructions(userInterface ui.UserInterface)
 		instructions(userInterface, refactor.Phase().String(), ui.YELLOW,
 			"Specify design improvements, or type 'next'.", refactor.Advanced)
 	}
-}
-
-func (red *RefactorState) NoAdvance() TDDPhase {
-	return &RefactorState{}
 }

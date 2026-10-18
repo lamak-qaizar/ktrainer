@@ -26,13 +26,27 @@ func (p Phase) String() string {
 	return "UNKNOWN"
 }
 
+type AdvanceEvent int
+
+const (
+	TestsPassed AdvanceEvent = iota
+	TestsFailed
+	Next
+	Stay
+)
+
+func From(testsPassed bool) AdvanceEvent {
+	if testsPassed {
+		return TestsPassed
+	}
+	return TestsFailed
+}
+
 type TDDPhase interface {
 	Phase() Phase
-	Advance(testsPassed bool) TDDPhase
+	Advance(event AdvanceEvent) TDDPhase
 	Prompt(userInput string) string
-	ForceAdvance() TDDPhase
 	PrintInstructions(userInterface ui.UserInterface)
-	NoAdvance() TDDPhase
 }
 
 type TestTDDPhase struct {
@@ -56,8 +70,8 @@ func NewTestTDDPhase(t *testing.T, expected []Transition) *TestTDDPhase {
 	}
 }
 
-func (tdd *TestTDDPhase) Advance(testsPassed bool) TDDPhase {
-	nextState := tdd.TDDPhase.Advance(testsPassed)
+func (tdd *TestTDDPhase) Advance(event AdvanceEvent) TDDPhase {
+	nextState := tdd.TDDPhase.Advance(event)
 
 	expectedTransition := tdd.expectedTransitions[tdd.pos]
 

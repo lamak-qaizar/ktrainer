@@ -28,7 +28,7 @@ func (appRunner *AppRunner) Run(tddPhase tdd.TDDPhase) {
 	}
 
 	if input == "next" {
-		appRunner.Run(tddPhase.ForceAdvance())
+		appRunner.Run(tddPhase.Advance(tdd.Next))
 		return
 	}
 
@@ -37,7 +37,7 @@ func (appRunner *AppRunner) Run(tddPhase tdd.TDDPhase) {
 	if err != nil {
 		spinner.Fail()
 		appRunner.userInterface.Writeln("\nError calling Claude:" + output)
-		appRunner.Run(tddPhase.NoAdvance())
+		appRunner.Run(tddPhase.Advance(tdd.Stay))
 		return
 	}
 
@@ -45,7 +45,7 @@ func (appRunner *AppRunner) Run(tddPhase tdd.TDDPhase) {
 		spinner.Fail()
 		appRunner.userInterface.WriteColoured("\nNo changes made: ", ui.RED)
 		appRunner.userInterface.Writeln(reason)
-		appRunner.Run(tddPhase.NoAdvance())
+		appRunner.Run(tddPhase.Advance(tdd.Stay))
 		return
 	}
 
@@ -54,7 +54,7 @@ func (appRunner *AppRunner) Run(tddPhase tdd.TDDPhase) {
 
 	testsPassed := appRunner.runTests()
 
-	appRunner.Run(tddPhase.Advance(testsPassed))
+	appRunner.Run(tddPhase.Advance(tdd.From(testsPassed)))
 }
 
 func (appRunner *AppRunner) runTests() (testsPassed bool) {

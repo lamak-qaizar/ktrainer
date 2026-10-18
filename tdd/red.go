@@ -13,9 +13,9 @@ func (red *RedState) Phase() Phase {
 	return Red
 }
 
-func (red *RedState) Advance(testsPassed bool) TDDPhase {
-	if testsPassed {
-		return red.NoAdvance()
+func (red *RedState) Advance(event AdvanceEvent) TDDPhase {
+	if event == TestsPassed || event == Stay {
+		return &RedState{First: red.First}
 	}
 
 	return &GreenState{Advanced: true, First: red.First}
@@ -23,10 +23,6 @@ func (red *RedState) Advance(testsPassed bool) TDDPhase {
 
 func (red *RedState) Prompt(userInput string) string {
 	return PromptFrom("red.tmpl", userInput)
-}
-
-func (red *RedState) ForceAdvance() TDDPhase {
-	return &GreenState{Advanced: true, First: red.First}
 }
 
 func (red *RedState) PrintInstructions(userInterface ui.UserInterface) {
@@ -37,8 +33,4 @@ func (red *RedState) PrintInstructions(userInterface ui.UserInterface) {
 		instructions(userInterface, red.Phase().String(), ui.RED,
 			"Describe the failing test to write.", red.Advanced)
 	}
-}
-
-func (red *RedState) NoAdvance() TDDPhase {
-	return &RedState{First: red.First}
 }

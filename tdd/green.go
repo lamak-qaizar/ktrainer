@@ -13,9 +13,9 @@ func (green *GreenState) Phase() Phase {
 	return Green
 }
 
-func (green *GreenState) Advance(testsPassed bool) TDDPhase {
-	if !testsPassed {
-		return green.NoAdvance()
+func (green *GreenState) Advance(event AdvanceEvent) TDDPhase {
+	if event == TestsFailed || event == Stay {
+		return &GreenState{First: green.First}
 	}
 
 	return &RefactorState{Advanced: true, First: green.First}
@@ -37,8 +37,4 @@ func (green *GreenState) PrintInstructions(userInterface ui.UserInterface) {
 		instructions(userInterface, green.Phase().String(), ui.GREEN,
 			"How would you like to pass the test?", green.Advanced)
 	}
-}
-
-func (green *GreenState) NoAdvance() TDDPhase {
-	return &GreenState{First: green.First}
 }
