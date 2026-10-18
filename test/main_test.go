@@ -77,7 +77,7 @@ func TestRunApp_StayOnRedWhenClaudeRejectsPrompt(t *testing.T) {
 				Commands: []app.CommandExpected{
 					{Command: claudeCmd("red.tmpl", "write all tests"), Mock: app.MockResponse{Output: "REJECTED: write one test only"}},
 				},
-				ExpectPhase: tdd.Transition{Current: tdd.Red, Next: tdd.Green},
+				ExpectPhase: tdd.Transition{Current: tdd.Red, Next: tdd.Red},
 			},
 			{
 				Input: "exit",
@@ -273,7 +273,7 @@ func TestRunApp_FirstPromptShouldBeMoreDescriptivev2(t *testing.T) {
 			{
 				Sensei:      "Remove duplication. Clean up code smells in tests and implementation.\n\nHowever, there isn't anything to improve right now. Type 'next'.",
 				Input:       "next",
-				ExpectPhase: tdd.Transition{Current: tdd.Red, Next: tdd.Green},
+				ExpectPhase: tdd.Transition{Current: tdd.Refactor, Next: tdd.Red},
 			},
 			{
 				Sensei: "Describe the failing test to write.",
@@ -282,7 +282,7 @@ func TestRunApp_FirstPromptShouldBeMoreDescriptivev2(t *testing.T) {
 					{Command: claudeCmd("red.tmpl", "write a test")},
 					{Command: "dotnet test", Mock: app.NewErrorResponse()},
 				},
-				ExpectPhase: tdd.Transition{Current: tdd.Green, Next: tdd.Green},
+				ExpectPhase: tdd.Transition{Current: tdd.Red, Next: tdd.Green},
 			},
 			{
 				Sensei: "How would you like to pass the test?",

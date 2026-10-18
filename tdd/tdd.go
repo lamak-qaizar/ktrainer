@@ -75,12 +75,8 @@ func (tdd *TestTDDPhase) Advance(event AdvanceEvent) TDDPhase {
 
 	expectedTransition := tdd.expectedTransitions[tdd.pos]
 
-	if tdd.TDDPhase.Phase() != expectedTransition.Current {
-		tdd.t.Fatalf("[Step %d] Current TDD phase %s, got: %s", tdd.pos, expectedTransition.Current, tdd.TDDPhase.Phase())
-	}
-
-	if nextState.Phase() != expectedTransition.Next {
-		tdd.t.Fatalf("[Step %d] Expected TDD phase %s, got: %s", tdd.pos, expectedTransition.Next, nextState.Phase())
+	if tdd.TDDPhase.Phase() != expectedTransition.Current || nextState.Phase() != expectedTransition.Next {
+		tdd.t.Fatalf("[Step %d] Expected: %s -> %s, Got: %s -> %s", tdd.pos, expectedTransition.Current, expectedTransition.Next, tdd.TDDPhase.Phase(), nextState.Phase())
 	}
 
 	return &TestTDDPhase{

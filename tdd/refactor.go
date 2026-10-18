@@ -14,11 +14,11 @@ func (refactor *RefactorState) Phase() Phase {
 }
 
 func (refactor *RefactorState) Advance(event AdvanceEvent) TDDPhase {
-	if event == Stay {
-		return &RefactorState{}
+	if event == Next {
+		return &RedState{Advanced: true}
 	}
 
-	return &RedState{Advanced: true}
+	return &RefactorState{}
 }
 
 func (refactor *RefactorState) Prompt(userInput string) string {
