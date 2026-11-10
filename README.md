@@ -24,6 +24,14 @@ mkdir -p ~/.agents/skills/ktrainer && curl -fsSL https://raw.githubusercontent.c
 Restart the agent after installing.
 </details>
 
+### Update the skill
+
+```sh
+npx skills update ktrainer
+```
+
+Add `-g` for global installs or `-p` for project installs. Manual installs: re-run the `curl` command above to overwrite the file, then restart the agent.
+
 ## Install the CLI via scoop
 
 ```sh
